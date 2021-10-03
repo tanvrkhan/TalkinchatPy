@@ -3,7 +3,7 @@
 - Download Termux Apk from F-Droid: [Download](https://f-droid.org/en/packages/com.termux/)
 - Run Termux and run below commands:
 
-### Markdown
+### Copy & Paste below commands one by one in your Android Termux
 
 
 ```markdown
