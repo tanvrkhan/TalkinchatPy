@@ -1,6 +1,6 @@
 ## Running the Talkinchat Python Websocket Bot using Termux on Android:
 
-- Download Termux Apk from F-Droid: [Download](https://jekyllrb.com/)
+- Download Termux Apk from F-Droid: [Download](https://f-droid.org/en/packages/com.termux/)
 - Run Termux and run below commands:
 
 ### Markdown
