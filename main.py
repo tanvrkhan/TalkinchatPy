@@ -464,7 +464,7 @@ async def send_group_msg_image(ws, room, url):
 
 
 async def send_group_msg_audio(ws, room, frm, url, isSpeechTxt = False):    
-    jsonbody = {HANDLER: HANDLER_ROOM_MESSAGE, ID: gen_random_str(20), ROOM: room, TYPE: MSG_TYPE_AUDIO, MSG_URL: url, MSG_BODY: "", MSG_LENGTH: "0" isSpeechTxt == True else f"{AUDIO_DURATION}"}
+    jsonbody = {HANDLER: HANDLER_ROOM_MESSAGE, ID: gen_random_str(20), ROOM: room, TYPE: MSG_TYPE_AUDIO, MSG_URL: url, MSG_BODY: "", MSG_LENGTH: "0" if isSpeechTxt == True else f"{AUDIO_DURATION}"}
     if AUDIO_DURATION < 600:
         await ws.send(json.dumps(jsonbody))
     else:
