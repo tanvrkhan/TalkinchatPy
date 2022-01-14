@@ -1,0 +1,7 @@
+beautifulsoup4==4.10.0
+Pillow==9.0.0
+pyaztro==0.3
+requests==2.27.1
+requests_toolbelt==0.9.1
+websockets==10.1
+youtube_dl==2021.12.17
