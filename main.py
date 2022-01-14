@@ -111,7 +111,7 @@ BOT_MASTER_ID = "docker"
 GROUP_TO_INIT_JOIN = "american"
 BOT_ID = "botcoder"
 BOT_MASTER = "docker"
-BOT_PWD = "XXXXXXXXXX"
+BOT_PWD = "G0lly~085+16"
 ########## ------- ##########
 
 IMG_TYPE_PNG = "image/png"
