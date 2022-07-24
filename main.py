@@ -215,7 +215,7 @@ async def on_message(ws, data):
 
     if msg.startswith("!say "):
         raw_query = msg.split()
-        txt = ' '.join(raw_query[2:])
+        txt = ' '.join(raw_query[1:])
         
         res = requests.get(tts_url(txt, raw_query[1]), headers = GOOGLE_TTS_HEADERS)
         
