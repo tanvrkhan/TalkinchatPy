@@ -1,0 +1,26 @@
+[Unit]
+Description=TalkinChat Bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/TalkinchatPy
+EnvironmentFile=/etc/talkinchat-bot.env
+Environment=PYTHONUNBUFFERED=1
+Environment=TALKINCHAT_STATE_DIR=/var/lib/talkinchat-bot
+ExecStart=/root/TalkinchatPy/.venv/bin/python -u /root/TalkinchatPy/main.py
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=30
+StateDirectory=talkinchat-bot
+StateDirectoryMode=0700
+SyslogIdentifier=talkinchat-bot
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=read-only
+ProtectSystem=strict
+ReadWritePaths=/var/lib/talkinchat-bot /root/TalkinchatPy
+
+[Install]
+WantedBy=multi-user.target
