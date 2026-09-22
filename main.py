@@ -40,6 +40,8 @@ from pytesseract import pytesseract
 import textwrap
 from io import BytesIO
 
+from runtime_config import RuntimeConfig
+
 
 # ===================================================================== AI CHAT BOT ===================================================================== 
 ''' 
@@ -106,12 +108,13 @@ EVENT_TYPE_SUCCESS = "success"
 ########## ------- ##########
 
 
-######### CREDENTIALS AND ROOM SETTINGS - CHANGE THIS #########
-BOT_MASTER_ID = "docker"
-GROUP_TO_INIT_JOIN = "american"
-BOT_ID = "botcoder"
-BOT_MASTER = "docker"
-BOT_PWD = "XXXXXXXXXXX"
+######### CREDENTIALS AND ROOM SETTINGS #########
+RUNTIME_CONFIG = RuntimeConfig.from_env(os.environ).require_valid()
+BOT_MASTER_ID = RUNTIME_CONFIG.owner
+GROUP_TO_INIT_JOIN = RUNTIME_CONFIG.room
+BOT_ID = RUNTIME_CONFIG.username
+BOT_MASTER = RUNTIME_CONFIG.owner
+BOT_PWD = RUNTIME_CONFIG.password
 ########## ------- ##########
 
 IMG_TYPE_PNG = "image/png"
