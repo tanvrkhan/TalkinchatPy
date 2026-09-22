@@ -410,7 +410,7 @@ async def on_message(ws, data):
         response = requests.get(user_avi)
 
         avatar = Image.open(BytesIO(response.content))
-        avatar1 = avatar.resize(size, Image.ANTIALIAS)
+        avatar1 = avatar.resize(size, Image.Resampling.LANCZOS)
         avatar2 = avatar1.filter(ImageFilter.GaussianBlur(radius = 15))
         color_txt_rnd = COLOR_LIST[random.randrange(len(COLOR_LIST))]
         draw_multiple_line_text(avatar2, msg, font, color_txt_rnd, text_start_height)
@@ -647,7 +647,9 @@ def draw_multiple_line_text(image, text, font, text_color, text_start_height):
     y_text = text_start_height
     lines = textwrap.wrap(text, width=25)
     for line in lines:
-        line_width, line_height = font.getsize(line)
+        bounds = draw.textbbox((0, 0), line, font=font)
+        line_width = bounds[2] - bounds[0]
+        line_height = bounds[3] - bounds[1]
         draw.text(((image_width - line_width) / 2, y_text), 
                   line, font=font, fill=text_color)
         y_text += line_height    
