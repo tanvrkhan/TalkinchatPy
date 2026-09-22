@@ -19,6 +19,17 @@ fi
 
 install -m 0644 "$app_dir/deploy/talkinchat-bot.service" "$unit_file"
 
+if [[ "${SKIP_SYSTEM_PACKAGES:-0}" != "1" ]]; then
+    packages=()
+    python3 -c 'import ensurepip' >/dev/null 2>&1 || packages+=(python3-venv)
+    command -v ffmpeg >/dev/null 2>&1 || packages+=(ffmpeg)
+    command -v tesseract >/dev/null 2>&1 || packages+=(tesseract-ocr)
+    if (( ${#packages[@]} > 0 )); then
+        apt-get update -q
+        DEBIAN_FRONTEND=noninteractive apt-get install -y "${packages[@]}"
+    fi
+fi
+
 if [[ "${SKIP_DEPENDENCIES:-0}" != "1" ]]; then
     python3 -m venv "$app_dir/.venv"
     "$app_dir/.venv/bin/python" -m pip install --disable-pip-version-check -q -r "$app_dir/requirements.txt"

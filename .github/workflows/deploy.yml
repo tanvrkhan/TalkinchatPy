@@ -1,0 +1,62 @@
+name: Deploy TalkinChat to VM
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: talkinchat-deploy-vm
+  cancel-in-progress: false
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Test deployment contracts
+        run: |
+          python3 -m unittest discover -v
+          bash tests/test_deploy_install.sh
+          python3 -m py_compile main.py runtime_config.py
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "${{ secrets.VM_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Deploy TalkinChat files
+        run: |
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes" \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='__pycache__' \
+            --exclude='*.pyc' \
+            --exclude='.env' \
+            --exclude='*.env' \
+            --exclude='.venv' \
+            --exclude='state' \
+            ./ "${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:/root/TalkinchatPy/"
+
+      - name: Install and verify TalkinChat service
+        run: |
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes \
+            "${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}" '
+              set -eu
+              cd /root/TalkinchatPy
+              bash deploy/install.sh
+              test -f /etc/talkinchat-bot.env
+              test "$(stat -c %a /etc/talkinchat-bot.env)" = "600"
+              test -d /var/lib/talkinchat-bot
+              systemctl is-enabled talkinchat-bot.service
+              if systemctl is-active --quiet talkinchat-bot.service; then
+                echo "TalkinChat service is active."
+              else
+                echo "TalkinChat service is installed and waiting for credentials."
+              fi
+            '

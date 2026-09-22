@@ -12,6 +12,10 @@ cp "$repo_root/deploy/talkinchat-bot.service" "$app_dir/deploy/talkinchat-bot.se
 cp "$repo_root/deploy/talkinchat-bot.env.example" "$app_dir/deploy/talkinchat-bot.env.example"
 cp "$repo_root/requirements.txt" "$app_dir/requirements.txt"
 
+grep -q 'python3-venv' "$app_dir/deploy/install.sh"
+grep -q 'ffmpeg' "$app_dir/deploy/install.sh"
+grep -q 'tesseract-ocr' "$app_dir/deploy/install.sh"
+
 systemctl_log="$tmp_root/systemctl.log"
 cat > "$tmp_root/bin/systemctl" <<'EOF'
 #!/usr/bin/env bash
@@ -21,6 +25,7 @@ chmod +x "$tmp_root/bin/systemctl"
 
 ROOT_PREFIX="$tmp_root" \
 TALKINCHAT_APP_DIR="$app_dir" \
+SKIP_SYSTEM_PACKAGES=1 \
 SKIP_DEPENDENCIES=1 \
 SYSTEMCTL_BIN="$tmp_root/bin/systemctl" \
 SYSTEMCTL_LOG="$systemctl_log" \
