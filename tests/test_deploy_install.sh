@@ -35,7 +35,12 @@ env_file="$tmp_root/etc/talkinchat-bot.env"
 unit_file="$tmp_root/etc/systemd/system/talkinchat-bot.service"
 
 test -f "$env_file"
-test "$(stat -f '%Lp' "$env_file" 2>/dev/null || stat -c '%a' "$env_file")" = "600"
+if stat -c '%a' "$env_file" >/dev/null 2>&1; then
+    env_mode="$(stat -c '%a' "$env_file")"
+else
+    env_mode="$(stat -f '%Lp' "$env_file")"
+fi
+test "$env_mode" = "600"
 test -d "$tmp_root/var/lib/talkinchat-bot"
 test -f "$unit_file"
 grep -q '^WorkingDirectory=/root/TalkinchatPy$' "$unit_file"
