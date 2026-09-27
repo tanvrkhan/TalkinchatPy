@@ -487,9 +487,6 @@ def slap(user, userid, roomid, avatar, now=None):
         return {"action": "raised", "room": roomid, "avatar": avatar}
 
     opponent = _pending
-    if str(opponent["roomid"]).casefold() == str(roomid).casefold():
-        return {"action": "same_room", "user": opponent["user"]}
-
     opponent_health = health(opponent["user"], now)
     if opponent_health["health"] < FIGHT_MIN_HEALTH:
         _pending = None

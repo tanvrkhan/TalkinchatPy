@@ -243,21 +243,19 @@ async def _handle_game(bot, context, name):
     if name == "slap":
         result = slap.slap(context.user, context.user_key, context.room, "")
         if result["action"] == "already":
-            return await _reply(bot, context, "Your hand is already raised. Waiting for a challenger from another room.")
+            return await _reply(bot, context, "Your hand is already raised. Waiting for another player.")
         if result["action"] == "health":
             return await _reply(
                 bot, context,
                 f"You need more health. Current health: {result['health']}; "
                 f"try again in {result['wait']} seconds.",
             )
-        if result["action"] == "same_room":
-            return await _reply(bot, context, "That hand was raised in this room. A challenger must use ,slap from another room.")
         if result["action"] == "opponent_health":
             return await _reply(bot, context, f"{result['user']} no longer has enough health to fight. Their raised hand was cleared.")
         if result["action"] == "raised":
             message = (
                 f"{context.user} from {context.room} raised a hand for a slap fight. "
-                "Use ,slap from another room to challenge."
+                "Another player can use ,slap to challenge."
             )
             for target_room in dict.fromkeys(bot.config.rooms):
                 await bot.transport.say(target_room, message)

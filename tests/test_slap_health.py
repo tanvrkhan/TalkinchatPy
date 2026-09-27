@@ -53,24 +53,20 @@ class SlapHealthTests(unittest.TestCase):
         self.assertEqual(result["health"], 0)
         self.assertEqual(result["wait"], 50)
 
-    def test_slap_pairs_players_from_different_rooms(self):
+    def test_slap_pairs_different_players_even_in_the_same_room(self):
         self.seed("Alice", xp=10_000, health=100, health_updated_at=2_000)
         self.seed("Bob", xp=10_000, health=100, health_updated_at=2_000)
         raised = slap.slap("Alice", "1", "Room A", "", now=2_000)
         self.assertEqual("raised", raised["action"])
         self.assertEqual("already", slap.slap(
             "Alice", "1", "Room B", "", now=2_000)["action"])
-        self.assertEqual("same_room", slap.slap(
-            "Bob", "2", "Room A", "", now=2_000)["action"])
-        self.assertEqual("Alice", slap.pending()["user"])
-
         with mock.patch.object(slap.random, "randint", return_value=0), \
                 mock.patch.object(slap.random, "random", return_value=0.05):
-            result = slap.slap("Bob", "2", "Room B", "", now=2_000)
+            result = slap.slap("Bob", "2", "Room A", "", now=2_000)
         self.assertEqual("fight", result["action"])
         self.assertEqual("Bob", result["winner"]["name"])
         self.assertEqual("Alice", result["loser"]["name"])
-        self.assertEqual("Room B", result["winner"]["room"])
+        self.assertEqual("Room A", result["winner"]["room"])
         self.assertEqual("Room A", result["loser"]["room"])
         self.assertIsNone(slap.pending())
         self.assertTrue(result["critical"])
