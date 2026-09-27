@@ -11,6 +11,10 @@ from config_store import ConfigStore
 from registry import DispatchContext, REGISTRY
 from services.auth import AccessControl
 from services.card_session import CardSessionManager
+from services.coin_ledger import CoinLedger
+from services.cricket_manager import CricketManager
+from services.cricket_stats import CricketStats
+from services.cricket_store import CricketStore
 from services.game_store import GameStore
 from transports.talkinchat import EventDecoder, EventKind, TalkinChatTransport
 
@@ -27,6 +31,11 @@ class TalkinChatBot:
         self.access = AccessControl(config.owner, self.store.get("admins", []))
         self.card_sessions = CardSessionManager(
             GameStore(config.state_dir / "card_games.json"))
+        self.cricket = CricketManager(
+            CricketStore(config.state_dir / "cricket.json"),
+            CoinLedger(config.state_dir / "coins.json"),
+            CricketStats(config.state_dir / "cricket_stats.json"),
+        )
 
     async def _connect(self, url):
         import websockets
