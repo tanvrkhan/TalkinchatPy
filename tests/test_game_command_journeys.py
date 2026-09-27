@@ -43,10 +43,10 @@ class FakeCricket:
     def match_for_room(self, room):
         return {
             "match_id": "m1", "revision": 7,
-            "innings": {"batting": "a", "bowling": "b", "striker": "alice", "bowler": "bob"},
+            "innings": {"batting": "a", "bowling": "b", "striker": "uid:alice", "bowler": "uid:bob"},
             "teams": {
-                "a": {"players": [{"key": "alice"}]},
-                "b": {"players": [{"key": "bob"}]},
+                "a": {"players": [{"key": "uid:alice"}]},
+                "b": {"players": [{"key": "uid:bob"}]},
             },
         }
 
@@ -153,15 +153,15 @@ class GameCommandJourneyTests(unittest.TestCase):
         self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, context, ",calluno 7")))
         self.assertIn("uno_called", bot.replies[-1])
         self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, context, ",crickettoss bat")))
-        self.assertEqual(("m1", "alice", "bat"), bot.cricket.toss)
+        self.assertEqual(("m1", "uid:alice", "bat"), bot.cricket.toss)
 
     def test_short_bat_and_bowl_commands_choose_the_toss(self):
         bot = Bot()
         context = DispatchContext("Alice", "Room")
         self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, context, ",bat")))
-        self.assertEqual(("m1", "alice", "bat"), bot.cricket.toss)
+        self.assertEqual(("m1", "uid:alice", "bat"), bot.cricket.toss)
         self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, context, ",bowl")))
-        self.assertEqual(("m1", "alice", "bowl"), bot.cricket.toss)
+        self.assertEqual(("m1", "uid:alice", "bowl"), bot.cricket.toss)
         self.assertFalse(hasattr(bot.cricket, "started"))
 
     def test_all_player_cricket_actions_have_text_commands(self):
@@ -178,17 +178,17 @@ class GameCommandJourneyTests(unittest.TestCase):
         self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, room, ",cricketqueue")))
         self.assertEqual(("Room", False), bot.cricket.started)
         self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, room, ",cricketproxy bowl 3")))
-        self.assertEqual(("m1", "alice", "bowl", 3, 7), bot.cricket.proxy)
+        self.assertEqual(("m1", "uid:alice", "bowl", 3, 7), bot.cricket.proxy)
         self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, room, ",cricketleave")))
         self.assertEqual(("Room", "Alice", "alice"), bot.cricket.left)
         self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, room, ",cricketend")))
-        self.assertEqual(("Room", "alice", False), bot.cricket.cancelled)
+        self.assertEqual(("Room", "uid:alice", False), bot.cricket.cancelled)
 
     def test_numbered_cricket_alias_submits_real_delivery(self):
         bot = Bot()
         context = DispatchContext("Alice", "Room")
         self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, context, ",b4")))
-        self.assertEqual(("m1", "alice", "bat", 4, 7), bot.cricket.delivery)
+        self.assertEqual(("m1", "uid:alice", "bat", 4, 7), bot.cricket.delivery)
 
     def test_cricket_bet_reaches_atomic_manager(self):
         bot = Bot()

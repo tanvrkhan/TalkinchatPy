@@ -4,6 +4,10 @@ from registry import command
 from services.cricket_manager import CricketManagerError
 
 
+def _player_key(context):
+    return f"uid:{context.user_key}"
+
+
 @command("cricket", aliases=("cric",), category="Games", needs_room=True,
          help="Open or join cross-room cricket")
 async def cricket(bot, context):
@@ -92,7 +96,7 @@ async def leave(bot, context):
 async def end(bot, context):
     try:
         result = await bot.cricket.cancel(
-            context.room, player_key=context.user_key,
+            context.room, player_key=_player_key(context),
             is_admin=context.level in {"admin", "creator"} or context.room_authority)
     except CricketManagerError as exc:
         await bot.reply(context, str(exc))
@@ -118,14 +122,15 @@ async def toss(bot, context):
 
 
 async def _choose_toss(bot, context, decision):
+    player_key = _player_key(context)
     match = (bot.cricket.match_for_room(context.room) if context.room
-             else bot.cricket.match_for_player(context.user_key))
+             else bot.cricket.match_for_player(player_key))
     if not match:
         await bot.reply(context, "No cricket toss is waiting here.")
         return
     try:
         result = await bot.cricket.toss_choice(
-            match["match_id"], context.user_key, decision)
+            match["match_id"], player_key, decision)
     except (KeyError, CricketManagerError) as exc:
         await bot.reply(context, str(exc))
         return
@@ -135,8 +140,9 @@ async def _choose_toss(bot, context, decision):
 @command("b", aliases=tuple(f"b{number}" for number in range(1, 7)),
          category="Games", help="Submit a private cricket choice")
 async def choice(bot, context):
+    player_key = _player_key(context)
     match = (bot.cricket.match_for_room(context.room) if context.room
-             else bot.cricket.match_for_player(context.user_key))
+             else bot.cricket.match_for_player(player_key))
     if not match:
         await bot.reply(context, "No cricket match is active here.")
         return
@@ -147,14 +153,14 @@ async def choice(bot, context):
         innings = match["innings"]
         batting = match["teams"][innings["batting"]]["players"]
         bowling = match["teams"][innings["bowling"]]["players"]
-        if any(player["key"] == context.user_key for player in batting):
+        if any(player["key"] == player_key for player in batting):
             side = "bat"
-        elif any(player["key"] == context.user_key for player in bowling):
+        elif any(player["key"] == player_key for player in bowling):
             side = "bowl"
         else:
             raise CricketManagerError("You are not playing in this match.")
         result = await bot.cricket.delivery_choice(
-            match["match_id"], context.user_key, side, number, match["revision"])
+            match["match_id"], player_key, side, number, match["revision"])
     except (KeyError, TypeError, ValueError, CricketManagerError) as exc:
         await bot.reply(context, str(exc) or "Use ,b1 through ,b6.")
         return
@@ -164,15 +170,16 @@ async def choice(bot, context):
 @command("cricketproxy", aliases=("cproxy",), category="Games",
          help="Choose for your team's AI batter or bowler")
 async def proxy(bot, context):
+    player_key = _player_key(context)
     match = (bot.cricket.match_for_room(context.room) if context.room
-             else bot.cricket.match_for_player(context.user_key))
+             else bot.cricket.match_for_player(player_key))
     values = context.args.split()
     if not match or len(values) != 2 or values[0].casefold() not in {"bat", "bowl"}:
         await bot.reply(context, "Usage: ,cricketproxy <bat|bowl> <1-6>")
         return
     try:
         result = await bot.cricket.proxy_choice(
-            match["match_id"], context.user_key, values[0].casefold(),
+            match["match_id"], player_key, values[0].casefold(),
             int(values[1]), match["revision"])
     except (KeyError, ValueError, CricketManagerError) as exc:
         await bot.reply(context, str(exc))
