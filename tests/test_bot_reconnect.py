@@ -30,6 +30,7 @@ class ReconnectTests(unittest.TestCase):
         return Config.from_env({
             "TALKINCHAT_USERNAME": "bot", "TALKINCHAT_PASSWORD": "pw",
             "TALKINCHAT_ROOM": "Room One,Room Two",
+            "TALKINCHAT_STATE_DIR": "/tmp/talkinchat-bot-tests",
         })
 
     def test_login_success_joins_all_rooms_and_ignores_bad_frames(self):
