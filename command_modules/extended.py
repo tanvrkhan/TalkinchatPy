@@ -241,7 +241,8 @@ async def _handle_game(bot, context, name):
     current = dict(sessions.get(room, {}))
 
     if name == "slap":
-        result = slap.slap(context.user, context.user_key, context.room, "")
+        result = slap.slap(
+            context.user, context.user_key, context.room, context.avatar)
         if result["action"] == "already":
             return await _reply(bot, context, "Your hand is already raised. Waiting for another player.")
         if result["action"] == "health":
@@ -258,6 +259,12 @@ async def _handle_game(bot, context, name):
                 "Another player can use ,slap to challenge."
             )
             for target_room in dict.fromkeys(bot.config.rooms):
+                if result.get("avatar"):
+                    try:
+                        await bot.transport.send_image(
+                            target_room, result["avatar"])
+                    except Exception:
+                        pass
                 await bot.transport.say(target_room, message)
             return None
         critical = " Critical hit!" if result.get("critical") else ""
@@ -270,6 +277,13 @@ async def _handle_game(bot, context, name):
             f"{loser['health']}/100 HP."
         )
         for target_room in dict.fromkeys((winner["room"], loser["room"])):
+            for competitor in (winner, loser):
+                if competitor.get("avatar"):
+                    try:
+                        await bot.transport.send_image(
+                            target_room, competitor["avatar"])
+                    except Exception:
+                        pass
             await bot.transport.say(target_room, message)
         return None
     if name in {"bomb", "cut", "tb"}:

@@ -126,6 +126,7 @@ class TalkinChatBot:
                         event.room,
                         self.access.level_of(event.user),
                         tuple(self.store.get("disabled", [])),
+                        avatar=event.avatar,
                     )
                     await self.dispatch(context, event.body)
                 elif event.kind == EventKind.USER_JOINED:

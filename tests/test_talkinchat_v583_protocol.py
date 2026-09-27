@@ -81,13 +81,14 @@ class CurrentProtocolTests(unittest.TestCase):
         self.assertEqual(b"My Room", message[6][0])
 
     def test_binary_result_message_decodes_room_text_and_login(self):
-        room_event = field(1, "text") + field(2, "Alice") + field(6, "hello") + field(13, "Lobby") + field(14, "42") + field(41, "event-1")
+        room_event = field(1, "text") + field(2, "Alice") + field(6, "hello") + field(10, "https://cdn.talkinchat.com/alice.jpg") + field(13, "Lobby") + field(14, "42") + field(41, "event-1")
         frame = bytes([8, 6]) + field(10, room_event)
         event = EventDecoder().decode(frame)
         self.assertEqual(EventKind.TEXT, event.kind)
         self.assertEqual("Lobby", event.room)
         self.assertEqual("Alice", event.user)
         self.assertEqual("hello", event.body)
+        self.assertEqual("https://cdn.talkinchat.com/alice.jpg", event.avatar)
         self.assertEqual("event-1", event.event_id)
 
         self.assertEqual(EventKind.LOGIN_SUCCESS, EventDecoder().decode(bytes([8, 16])).kind)

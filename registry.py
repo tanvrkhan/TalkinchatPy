@@ -21,6 +21,7 @@ class DispatchContext:
     room_authority: bool = False
     args: str = ""
     invoked_name: str = ""
+    avatar: str = ""
 
     @property
     def user_key(self):

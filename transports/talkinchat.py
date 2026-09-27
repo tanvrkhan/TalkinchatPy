@@ -220,6 +220,7 @@ class Event:
     body: str = ""
     url: str = ""
     raw_type: str = ""
+    avatar: str = ""
 
 
 class EventDecoder:
@@ -279,6 +280,7 @@ class EventDecoder:
             body=str(data.get("body") or ""),
             url=str(data.get("url") or ""),
             raw_type=event_type,
+            avatar=str(data.get("avatarUrl") or data.get("avatar_url") or ""),
         )
 
     def _decode_binary(self, frame):
@@ -313,6 +315,7 @@ class EventDecoder:
             event_id=_text(room_event, 41), room=_text(room_event, 13),
             user=user, user_key=normalize_identity(user), body=_text(room_event, 6),
             url=_text(room_event, 7), raw_type=event_type,
+            avatar=_text(room_event, 10),
         )
 
 
