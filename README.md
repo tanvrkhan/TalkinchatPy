@@ -1,8 +1,9 @@
 # TalkinchatPy
 
-Legacy TalkinChat bot under staged modernization. The current runtime preserves
-the original websocket, upload, music, draw, OCR, text-to-speech, and welcome
-behavior while loading credentials from the environment.
+Modern TalkinChat bot using the verified websocket/upload protocol with a
+modular command registry, transport adapter, AI/media services, economy,
+games, moderation, public activity retention, and reconnect recovery. The
+legacy `main.py` remains in the repository as a manual rollback target.
 
 ## Runtime configuration
 
@@ -38,4 +39,8 @@ systemctl is-active talkinchat-bot
 
 Rollback is independent from Howdiesbot: deploy an earlier TalkinchatPy commit
 to `/root/TalkinchatPy` and restart only `talkinchat-bot.service`.
+
+The service runs `bot.py`. Commands accept both `,` and `!`; help displays the
+comma prefix. TalkinChat and Howdiesbot share only the local Ollama endpoint and
+the neutral `/run/lock/local-ollama.lock` coordination file.
 Talkinchat Websocket Bot in Python

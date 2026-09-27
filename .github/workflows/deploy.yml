@@ -16,11 +16,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependencies
+        run: python3 -m pip install -r requirements.txt
+
       - name: Test deployment contracts
         run: |
           python3 -m unittest discover -v
           bash tests/test_deploy_install.sh
-          python3 -m py_compile main.py runtime_config.py
+          python3 -m compileall -q bot.py commands.py config.py config_store.py command_modules services transports
+          TALKINCHAT_USERNAME=check TALKINCHAT_PASSWORD=check TALKINCHAT_ROOM=check \
+            TALKINCHAT_STATE_DIR=/tmp/talkinchat-readiness \
+            python3 bot.py --check-readiness
 
       - name: Configure SSH
         run: |

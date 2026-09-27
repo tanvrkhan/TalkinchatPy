@@ -17,6 +17,11 @@ class DeploymentWorkflowContractTests(unittest.TestCase):
         self.assertIn("python3 -m unittest discover -v", workflow)
         self.assertIn("bash tests/test_deploy_install.sh", workflow)
         self.assertIn("bash deploy/install.sh", workflow)
+        self.assertIn('python-version: "3.12"', workflow)
+        self.assertIn("python3 bot.py --check-readiness", workflow)
+        service = (WORKFLOW.parents[2] / "deploy" / "talkinchat-bot.service").read_text()
+        self.assertIn("/root/TalkinchatPy/bot.py", service)
+        self.assertNotIn("/root/TalkinchatPy/main.py", service)
         self.assertNotIn("systemctl restart howdies-bot", workflow)
         self.assertNotIn("/root/HowdiesPy", workflow)
 

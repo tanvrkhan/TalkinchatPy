@@ -9,7 +9,7 @@ WorkingDirectory=/root/TalkinchatPy
 EnvironmentFile=/etc/talkinchat-bot.env
 Environment=PYTHONUNBUFFERED=1
 Environment=TALKINCHAT_STATE_DIR=/var/lib/talkinchat-bot
-ExecStart=/root/TalkinchatPy/.venv/bin/python -u /root/TalkinchatPy/main.py
+ExecStart=/root/TalkinchatPy/.venv/bin/python -u /root/TalkinchatPy/bot.py
 Restart=on-failure
 RestartSec=10
 TimeoutStopSec=30
@@ -20,7 +20,7 @@ NoNewPrivileges=true
 PrivateTmp=true
 ProtectHome=read-only
 ProtectSystem=strict
-ReadWritePaths=/var/lib/talkinchat-bot /root/TalkinchatPy
+ReadWritePaths=/var/lib/talkinchat-bot /root/TalkinchatPy /run/lock
 
 [Install]
 WantedBy=multi-user.target
