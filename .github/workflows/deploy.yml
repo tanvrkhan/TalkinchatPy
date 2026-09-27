@@ -42,7 +42,7 @@ jobs:
 
       - name: Deploy TalkinChat files
         run: |
-          release_id="${GITHUB_SHA}"
+          release_id="${GITHUB_SHA}-${GITHUB_RUN_ID}"
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes \
             "${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}" \
             "mkdir -p /opt/talkinchat/incoming/${release_id}"
@@ -63,8 +63,8 @@ jobs:
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes \
             "${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}" '
               set -eu
-              cd /opt/talkinchat/incoming/${{ github.sha }}
-              bash deploy/release.sh "${{ github.sha }}" "/opt/talkinchat/incoming/${{ github.sha }}"
+              cd /opt/talkinchat/incoming/${{ github.sha }}-${{ github.run_id }}
+              bash deploy/release.sh "${{ github.sha }}-${{ github.run_id }}" "/opt/talkinchat/incoming/${{ github.sha }}-${{ github.run_id }}"
               test -f /etc/talkinchat-bot.env
               test "$(stat -c %a /etc/talkinchat-bot.env)" = "640"
               test -d /var/lib/talkinchat-bot

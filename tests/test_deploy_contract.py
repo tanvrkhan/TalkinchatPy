@@ -12,6 +12,7 @@ class DeploymentWorkflowContractTests(unittest.TestCase):
         self.assertIn("branches: [master]", workflow)
         self.assertIn("group: talkinchat-deploy-vm", workflow)
         self.assertIn("/opt/talkinchat/incoming/", workflow)
+        self.assertIn("GITHUB_RUN_ID", workflow)
         self.assertIn("talkinchat-bot.env", workflow)
         self.assertIn("/var/lib/talkinchat-bot", workflow)
         self.assertIn("python3 -m unittest discover -v", workflow)
