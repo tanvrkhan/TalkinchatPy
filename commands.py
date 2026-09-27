@@ -1,3 +1,3 @@
 """Compatibility import surface for TalkinChat command modules."""
 
-# Command groups register themselves here as each migration phase is enabled.
+from command_modules import meta  # noqa: F401
