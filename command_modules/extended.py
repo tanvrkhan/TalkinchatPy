@@ -224,7 +224,12 @@ async def _handle(bot, context, name):
         entries = bot.activity.admin_log(context.room, limit=20).entries
         return await _reply(bot, context, "\n".join(f"{x.actor_name}: {x.action} ({x.outcome})" for x in entries) or "No admin actions.")
     if name == "bots":
-        return await _reply(bot, context, "TalkinChat primary bot: this instance. Collectors: separately configured only.")
+        rooms = ", ".join(bot.config.rooms) or "none"
+        return await _reply(
+            bot,
+            context,
+            f"Bots:\n{bot.config.username} - rooms: {rooms}",
+        )
 
     return await _handle_game(bot, context, name)
 

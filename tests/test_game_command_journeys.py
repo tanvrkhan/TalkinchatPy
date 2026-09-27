@@ -1,5 +1,6 @@
 import asyncio
 import unittest
+from types import SimpleNamespace
 
 import commands  # noqa: F401
 from registry import DispatchContext, REGISTRY
@@ -87,6 +88,8 @@ class FakeCricket:
 
 class Bot:
     def __init__(self):
+        self.config = SimpleNamespace(
+            username="TalkinBot", rooms=("paki_friends", "Games Room"))
         self.card_sessions = FakeCards()
         self.cricket = FakeCricket()
         self.replies = []
@@ -107,6 +110,12 @@ class GameCommandJourneyTests(unittest.TestCase):
     def test_bots_status_command_is_available_to_admins(self):
         self.assertEqual("admin", REGISTRY.get("bots").level)
         self.assertIs(REGISTRY.get("bots"), REGISTRY.get("instances"))
+        bot = Bot()
+        context = DispatchContext("Sherry", "", level="creator")
+        self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, context, ",bots")))
+        self.assertIn("TalkinBot", bot.replies[-1])
+        self.assertIn("paki_friends", bot.replies[-1])
+        self.assertIn("Games Room", bot.replies[-1])
 
     def test_card_play_and_draw_reach_session_manager(self):
         bot = Bot()
