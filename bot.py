@@ -10,6 +10,7 @@ from config import Config, ConfigError
 from config_store import ConfigStore
 from registry import DispatchContext, REGISTRY
 from services.auth import AccessControl
+from services.activity_store import ActivityStore
 from services.card_session import CardSessionManager
 from services.coin_ledger import CoinLedger
 from services.cricket_manager import CricketManager
@@ -29,6 +30,7 @@ class TalkinChatBot:
         self.transport = None
         self.store = ConfigStore(config.state_dir)
         self.access = AccessControl(config.owner, self.store.get("admins", []))
+        self.activity = ActivityStore(config.state_dir / "activity.sqlite3")
         self.card_sessions = CardSessionManager(
             GameStore(config.state_dir / "card_games.json"))
         self.cricket = CricketManager(
@@ -64,6 +66,11 @@ class TalkinChatBot:
                 for room in self.config.rooms:
                     await self.transport.join_room(room)
             elif event.kind == EventKind.TEXT and event.user_key != self.config.username.casefold():
+                self.activity.record_message(
+                    event.event_id or f"message:{hash(frame)}", event.room, event.room,
+                    event.user_key, event.user, event.body)
+                if self.config.collector_mode:
+                    continue
                 context = DispatchContext(
                     event.user,
                     event.room,
@@ -71,6 +78,10 @@ class TalkinChatBot:
                     tuple(self.store.get("disabled", [])),
                 )
                 await self.registry.dispatch(self, context, event.body)
+            elif event.kind == EventKind.USER_JOINED:
+                self.activity.record_presence(
+                    event.event_id or f"join:{hash(frame)}", event.room, event.room,
+                    event.user_key, event.user, "join")
 
     async def run_forever(self):
         delay = 1.0

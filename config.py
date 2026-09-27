@@ -29,6 +29,7 @@ class Config:
     connect_timeout: float = 15.0
     read_timeout: float = 90.0
     max_upload_bytes: int = 15 * 1024 * 1024
+    collector_mode: bool = False
 
     @classmethod
     def from_env(cls, environ: Mapping[str, str]):
@@ -61,6 +62,7 @@ class Config:
             connect_timeout=float(_value(environ, "TALKINCHAT_CONNECT_TIMEOUT", "15")),
             read_timeout=float(_value(environ, "TALKINCHAT_READ_TIMEOUT", "90")),
             max_upload_bytes=int(_value(environ, "TALKINCHAT_MAX_UPLOAD_BYTES", str(15 * 1024 * 1024))),
+            collector_mode=_value(environ, "TALKINCHAT_MODE", "bot").casefold() == "collector",
         )
 
 
