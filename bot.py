@@ -7,7 +7,9 @@ import os
 
 import commands  # noqa: F401  # register command modules
 from config import Config, ConfigError
+from config_store import ConfigStore
 from registry import DispatchContext, REGISTRY
+from services.auth import AccessControl
 from transports.talkinchat import EventDecoder, EventKind, TalkinChatTransport
 
 
@@ -19,6 +21,8 @@ class TalkinChatBot:
         self.registry = registry
         self.decoder = EventDecoder()
         self.transport = None
+        self.store = ConfigStore(config.state_dir)
+        self.access = AccessControl(config.owner, self.store.get("admins", []))
 
     async def _connect(self, url):
         import websockets
@@ -47,7 +51,12 @@ class TalkinChatBot:
                 for room in self.config.rooms:
                     await self.transport.join_room(room)
             elif event.kind == EventKind.TEXT and event.user_key != self.config.username.casefold():
-                context = DispatchContext(event.user, event.room)
+                context = DispatchContext(
+                    event.user,
+                    event.room,
+                    self.access.level_of(event.user),
+                    tuple(self.store.get("disabled", [])),
+                )
                 await self.registry.dispatch(self, context, event.body)
 
     async def run_forever(self):
