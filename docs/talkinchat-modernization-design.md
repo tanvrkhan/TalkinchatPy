@@ -45,11 +45,11 @@ only as historical compatibility evidence:
 - Incoming event handlers currently used: `login_event`, `room_event`; room
   event types currently used: `text`, `image`, and `user_joined`.
 
-Unverified protocol features such as roles, buttons, profile changes, richer
-membership controls, and kick semantics must be treated as optional
-capabilities. The adapter must expose stable methods for them, but callers must
-receive text fallbacks or explicit unsupported-capability results when the
-protocol support is not proven.
+TalkinChat 5.8.3 verifies room kick and role changes through the binary `Query`
+schema: action `room_admin`, type `kick` or `change_role`, target field 4, room
+field 6, and role field 11. Roles are `owner`, `admin`, `member`, and `none`.
+Buttons, profile changes, and authoritative member listing remain optional
+capabilities; callers receive text fallbacks when support is not proven.
 
 ## Architecture
 

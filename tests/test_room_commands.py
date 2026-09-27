@@ -6,6 +6,7 @@ from pathlib import Path
 import commands  # noqa: F401
 from config_store import ConfigStore
 from registry import DispatchContext, REGISTRY
+from registry import PermissionDenied
 from transports.talkinchat import OperationResult
 
 
@@ -17,7 +18,12 @@ class Transport:
         self.joined.append(room)
 
     async def kick(self, room, user):
-        return OperationResult(False, "Kick is not supported by the verified TalkinChat protocol.")
+        self.kicked = (room, user)
+        return OperationResult(True)
+
+    async def set_role(self, room, user, role):
+        self.role = (room, user, role)
+        return OperationResult(True)
 
 
 class Bot:
@@ -29,6 +35,9 @@ class Bot:
     async def reply(self, context, text):
         self.replies.append(text)
 
+    def refresh_access(self):
+        pass
+
 
 class RoomCommandTests(unittest.TestCase):
     def test_join_preserves_room_spelling(self):
@@ -38,12 +47,54 @@ class RoomCommandTests(unittest.TestCase):
                 bot, DispatchContext("owner", "", "admin"), ",join My Room"))
             self.assertEqual(["My Room"], bot.transport.joined)
 
-    def test_unsupported_kick_reports_fallback_without_claiming_success(self):
+    def test_kick_uses_verified_transport_and_validates_target(self):
         with tempfile.TemporaryDirectory() as root:
             bot = Bot(Path(root))
             asyncio.run(REGISTRY.dispatch(
                 bot, DispatchContext("owner", "My Room", "admin"), ",kick Alice"))
-            self.assertIn("not supported", bot.replies[-1])
+            self.assertEqual(("My Room", "Alice"), bot.transport.kicked)
+            self.assertIn("Alice", bot.replies[-1])
+
+    def test_admin_owner_member_and_setrole_use_verified_transport(self):
+        with tempfile.TemporaryDirectory() as root:
+            bot = Bot(Path(root))
+            context = DispatchContext("owner", "My Room", "creator")
+            for command, role in (
+                    (",admin Alice", "admin"), (",owner Bob", "owner"),
+                    (",member Carol", "member"), (",setrole Dave none", "none")):
+                self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, context, command)))
+                self.assertEqual(("My Room", command.split()[1], role), bot.transport.role)
+
+    def test_admin_configuration_syntax_still_manages_bot_admins(self):
+        with tempfile.TemporaryDirectory() as root:
+            bot = Bot(Path(root))
+            context = DispatchContext("owner", "My Room", "creator")
+            self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, context, ",admin add Helper")))
+            self.assertEqual(["helper"], bot.store.get("admins"))
+
+    def test_moderation_commands_require_room_authority(self):
+        with tempfile.TemporaryDirectory() as root:
+            bot = Bot(Path(root))
+            ordinary = DispatchContext("user", "My Room")
+            for command in (",kick Alice", ",admin Alice", ",owner Alice", ",member Alice"):
+                with self.assertRaises(PermissionDenied):
+                    asyncio.run(REGISTRY.dispatch(bot, ordinary, command))
+
+    def test_role_aliases_resolve_to_native_handlers(self):
+        self.assertIs(REGISTRY.get("owner"), REGISTRY.get("makeowner"))
+        self.assertIs(REGISTRY.get("member"), REGISTRY.get("demote"))
+        self.assertIs(REGISTRY.get("promote"), REGISTRY.get("a"))
+        self.assertIs(REGISTRY.get("setrole"), REGISTRY.get("role"))
+
+    def test_ownership_transfer_is_creator_only(self):
+        with tempfile.TemporaryDirectory() as root:
+            bot = Bot(Path(root))
+            room_admin = DispatchContext(
+                "moderator", "My Room", room_authority=True)
+            self.assertTrue(asyncio.run(REGISTRY.dispatch(
+                bot, room_admin, ",owner Alice")))
+            self.assertFalse(hasattr(bot.transport, "role"))
+            self.assertIn("creator", bot.replies[-1].casefold())
 
 
 if __name__ == "__main__":

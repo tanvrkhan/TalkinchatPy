@@ -87,10 +87,11 @@ Private game information uses TalkinChat DMs. A game requiring hidden hands or
 choices does not start unless the adapter confirms private delivery. Public
 state always has a complete text representation; images are enhancements.
 
-Roles, profile reads/writes, targeted room messages, muting, promotion,
-ownership changes, rich presence, and richer membership controls remain
-capability-gated. A verified payload implementation may enable a capability.
-Otherwise commands return a precise text fallback and do not claim success.
+Kick and role changes are enabled through the TalkinChat 5.8.3 binary `Query`
+contract verified from the application package. Profile reads/writes, targeted
+room messages, muting, rich presence, and authoritative membership controls
+remain capability-gated. Unsupported commands return a precise text fallback
+and do not claim success.
 
 Room names preserve configured display spelling and use Unicode case-folded
 keys for lookup. Usernames preserve display spelling and use Unicode

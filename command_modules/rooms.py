@@ -29,12 +29,91 @@ async def rejoin(bot, context):
     await bot.transport.rejoin_room(context.room)
 
 
-@command("kick", aliases=("k",), level="admin", room_admin=True,
+def _target(context):
+    return context.args.strip().split()[0].lstrip("@") if context.args.strip() else ""
+
+
+async def _set_role(bot, context, role, target=""):
+    if role == "owner" and context.level != "creator":
+        await bot.reply(context, "Only a bot creator can transfer room ownership.")
+        return
+    target = target or _target(context)
+    if not target:
+        await bot.reply(context, f"Usage: ,{context.invoked_name} <user>")
+        return
+    result = await bot.transport.set_role(context.room, target, role)
+    if result.supported:
+        await bot.reply(context, f"Role change requested: {target} -> {role}.")
+    else:
+        await bot.reply(context, result.message)
+
+
+@command("kick", aliases=("k",), room_admin=True,
          help="Kick a user", category="Moderation", needs_room=True)
 async def kick(bot, context):
-    result = await bot.transport.kick(context.room, context.args)
-    if not result.supported:
-        await bot.reply(context, result.message)
+    target = _target(context)
+    if not target:
+        await bot.reply(context, "Usage: ,kick <user>")
+        return
+    result = await bot.transport.kick(context.room, target)
+    await bot.reply(
+        context,
+        f"Kick requested for {target}." if result.supported else result.message,
+    )
+
+
+@command("admin", category="Moderation", room_admin=True,
+         help="Make a user a room admin or manage bot admins")
+async def admin(bot, context):
+    action, _, value = context.args.strip().partition(" ")
+    if action.casefold() in {"add", "remove", "del", "list"}:
+        if context.level != "creator":
+            await bot.reply(context, "Only a bot creator can manage bot admins.")
+            return
+        admins = set(bot.store.get("admins", []))
+        if action.casefold() == "add" and value:
+            admins.add(value.casefold())
+        elif action.casefold() in {"remove", "del"} and value:
+            admins.discard(value.casefold())
+        elif action.casefold() != "list":
+            await bot.reply(context, "Usage: ,admin add|remove|list <user>")
+            return
+        bot.store.set("admins", sorted(admins))
+        bot.refresh_access()
+        await bot.reply(context, "Bot admins: " + (", ".join(sorted(admins)) or "none"))
+        return
+    if not context.room:
+        await bot.reply(context, "Use ,admin <user> in a room, or ,admin add|remove|list.")
+        return
+    await _set_role(bot, context, "admin", action.lstrip("@"))
+
+
+@command("promote", aliases=("a",), category="Moderation", needs_room=True,
+         room_admin=True, help="Make a user a room admin")
+async def promote(bot, context):
+    await _set_role(bot, context, "admin")
+
+
+@command("owner", aliases=("makeowner", "o"), category="Moderation", needs_room=True,
+         room_admin=True, help="Make a user a room owner")
+async def owner(bot, context):
+    await _set_role(bot, context, "owner")
+
+
+@command("member", aliases=("demote", "m", "d"), category="Moderation", needs_room=True,
+         room_admin=True, help="Set a user's room role to member")
+async def member(bot, context):
+    await _set_role(bot, context, "member")
+
+
+@command("setrole", aliases=("role",), category="Moderation", needs_room=True,
+         room_admin=True, help="Set a user's room role")
+async def set_role(bot, context):
+    values = context.args.split()
+    if len(values) != 2 or values[1].casefold() not in {"owner", "admin", "member", "none"}:
+        await bot.reply(context, "Usage: ,setrole <user> <owner|admin|member|none>")
+        return
+    await _set_role(bot, context, values[1].casefold(), values[0].lstrip("@"))
 
 
 @command("who", aliases=("users", "members", "inroom", "u", "l"),

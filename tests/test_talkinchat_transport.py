@@ -5,6 +5,7 @@ from transports.talkinchat import (
     Capabilities,
     TalkinChatTransport,
     message_payload,
+    moderation_payload,
     room_payload,
     protobuf_fields,
 )
@@ -28,16 +29,32 @@ class PayloadTests(unittest.TestCase):
         self.assertIsInstance(message_payload(
             "chat_message", "Alice", "image", "2", url="https://image"), bytes)
 
-    def test_adapter_sends_json_and_reports_unsupported_capabilities(self):
+    def test_adapter_sends_messages_and_verified_moderation_payloads(self):
         socket = Socket()
         transport = TalkinChatTransport(socket, "bot", "pw", id_factory=lambda: "fixed")
         asyncio.run(transport.say("Room", "hello"))
         self.assertIsInstance(socket.sent[0], bytes)
-        self.assertFalse(transport.supports(Capabilities.KICK))
+        self.assertTrue(transport.supports(Capabilities.KICK))
+        self.assertTrue(transport.supports(Capabilities.ROLES))
         result = asyncio.run(transport.kick("Room", "Alice"))
-        self.assertFalse(result.supported)
-        self.assertIn("not supported", result.message)
-        self.assertEqual(1, len(socket.sent))
+        self.assertTrue(result.supported)
+        self.assertEqual(
+            {1: [b"room_admin"], 2: [b"kick"], 4: [b"Alice"],
+             6: [b"Room"], 11: [b"none"]},
+            protobuf_fields(socket.sent[-1]),
+        )
+        asyncio.run(transport.set_role("Room", "Bob", "owner"))
+        self.assertEqual(
+            {1: [b"room_admin"], 2: [b"change_role"], 4: [b"Bob"],
+             6: [b"Room"], 11: [b"owner"]},
+            protobuf_fields(socket.sent[-1]),
+        )
+
+    def test_moderation_payload_rejects_missing_targets_and_unknown_roles(self):
+        with self.assertRaises(ValueError):
+            moderation_payload("kick", "Room", "")
+        with self.assertRaises(ValueError):
+            moderation_payload("change_role", "Room", "Alice", "moderator")
 
     def test_audio_length_is_bounded(self):
         socket = Socket()

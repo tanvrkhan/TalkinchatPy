@@ -167,6 +167,24 @@ def message_payload(handler, target, kind, request_id, *, body="", url="", lengt
     return b"".join(fields)
 
 
+def moderation_payload(action, room, username, role="none"):
+    room = str(room or "").strip()
+    username = str(username or "").strip().lstrip("@")
+    if action not in {"kick", "change_role"}:
+        raise ValueError("unsupported moderation action")
+    if not room or not username:
+        raise ValueError("room and username are required")
+    if action == "change_role" and role not in {"owner", "admin", "member", "none"}:
+        raise ValueError("role must be owner, admin, member, or none")
+    return b"".join((
+        _string_field(1, "room_admin"),
+        _string_field(2, action),
+        _string_field(4, username),
+        _string_field(6, room),
+        _string_field(11, role if action == "change_role" else "none"),
+    ))
+
+
 class Capabilities(str, Enum):
     PRIVATE_MESSAGES = "private_messages"
     MEDIA = "media"
@@ -182,6 +200,8 @@ SUPPORTED = frozenset({
     Capabilities.PRIVATE_MESSAGES,
     Capabilities.MEDIA,
     Capabilities.ROOM_MEMBERSHIP,
+    Capabilities.KICK,
+    Capabilities.ROLES,
 })
 MAX_TEXT_BYTES = 900
 
@@ -372,7 +392,11 @@ class TalkinChatTransport:
             "room_message", room, "audio", self.id_factory(), url=str(url), length=str(length)))
 
     async def kick(self, room, username):
-        return OperationResult(False, "Kick is not supported by the verified TalkinChat protocol.")
+        return await self._send(moderation_payload("kick", room, username))
+
+    async def set_role(self, room, username, role):
+        return await self._send(moderation_payload(
+            "change_role", room, username, str(role).casefold()))
 
     async def room_members(self, room):
         return OperationResult(False, "Authoritative member lists are not supported by the verified protocol.")
