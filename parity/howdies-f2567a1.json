@@ -17,7 +17,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "syntax",
@@ -28,7 +28,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "ping",
@@ -37,7 +37,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "uptime",
@@ -46,7 +46,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "play",
@@ -58,7 +58,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "jio",
@@ -67,7 +67,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "say",
@@ -76,7 +76,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "img",
@@ -88,7 +88,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "gif",
@@ -97,7 +97,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "draw",
@@ -106,7 +106,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "draw2",
@@ -115,7 +115,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "imagine",
@@ -124,7 +124,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "cfdiag",
@@ -133,7 +133,7 @@
       "permission": "creator",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "buttonprobe",
@@ -142,7 +142,7 @@
       "permission": "creator",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "buttontest",
@@ -151,7 +151,7 @@
       "permission": "creator",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "buttonwatch",
@@ -160,7 +160,7 @@
       "permission": "creator",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "recordgame",
@@ -169,7 +169,7 @@
       "permission": "creator",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "accessprobe",
@@ -178,7 +178,7 @@
       "permission": "creator",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "profileprobe",
@@ -187,7 +187,7 @@
       "permission": "creator",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "audienceprobe",
@@ -196,7 +196,7 @@
       "permission": "creator",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "ud",
@@ -207,7 +207,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "horo",
@@ -218,7 +218,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "joke",
@@ -229,7 +229,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "quote",
@@ -238,7 +238,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "weather",
@@ -247,7 +247,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "wiki",
@@ -258,7 +258,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "tr",
@@ -267,7 +267,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "translate",
@@ -276,7 +276,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "calc",
@@ -287,7 +287,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "roll",
@@ -298,7 +298,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "flip",
@@ -309,7 +309,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "8ball",
@@ -318,7 +318,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "askai",
@@ -330,7 +330,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "who",
@@ -345,7 +345,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "whereis",
@@ -358,7 +358,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "room",
@@ -367,7 +367,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "join",
@@ -376,7 +376,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "leave",
@@ -387,7 +387,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "rj",
@@ -396,7 +396,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "rooms",
@@ -405,7 +405,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "roomsearch",
@@ -416,7 +416,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "kick",
@@ -427,7 +427,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "config",
@@ -439,7 +439,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "prefix",
@@ -448,7 +448,7 @@
       "permission": "creator",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "admin",
@@ -457,7 +457,7 @@
       "permission": "creator",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "enable",
@@ -466,7 +466,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "disable",
@@ -475,7 +475,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "wc",
@@ -486,7 +486,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "setwelcome",
@@ -497,7 +497,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "delwelcome",
@@ -508,7 +508,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "welcomes",
@@ -517,7 +517,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "autoreply",
@@ -526,7 +526,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "slap",
@@ -535,7 +535,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "bomb",
@@ -544,7 +544,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "cut",
@@ -553,7 +553,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "tb",
@@ -564,7 +564,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "shield",
@@ -575,7 +575,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "market",
@@ -586,7 +586,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "buy",
@@ -595,7 +595,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "spin",
@@ -606,7 +606,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "xp",
@@ -620,7 +620,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "slaptop",
@@ -633,7 +633,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "quiz",
@@ -644,7 +644,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "trivia",
@@ -653,7 +653,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "scramble",
@@ -664,7 +664,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "mathquiz",
@@ -675,7 +675,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "emoji",
@@ -686,7 +686,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "ff",
@@ -697,7 +697,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "stopgame",
@@ -709,7 +709,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "end",
@@ -718,7 +718,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "cricket",
@@ -729,7 +729,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "bat",
@@ -740,7 +740,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "bowl",
@@ -751,7 +751,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "b",
@@ -767,7 +767,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "cricketscore",
@@ -778,7 +778,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "cricketmatches",
@@ -789,7 +789,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "cricketstats",
@@ -800,7 +800,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "cricketbet",
@@ -809,7 +809,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "numbergame",
@@ -821,7 +821,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "chain",
@@ -832,7 +832,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "wyr",
@@ -843,7 +843,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "thulla",
@@ -852,7 +852,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "rang",
@@ -861,7 +861,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "uno",
@@ -870,7 +870,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "hand",
@@ -879,7 +879,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "trump",
@@ -888,7 +888,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "color",
@@ -897,7 +897,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "challenge",
@@ -906,7 +906,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "catchuno",
@@ -915,7 +915,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "resume",
@@ -924,7 +924,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "bingo",
@@ -933,7 +933,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "card",
@@ -944,7 +944,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "call",
@@ -955,7 +955,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "start",
@@ -964,7 +964,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "rps",
@@ -973,7 +973,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "duel",
@@ -984,7 +984,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "roulette",
@@ -993,7 +993,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "shoot",
@@ -1002,7 +1002,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "vampire",
@@ -1014,7 +1014,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "clue",
@@ -1023,7 +1023,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "vote",
@@ -1032,7 +1032,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "guess",
@@ -1041,7 +1041,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "story",
@@ -1050,7 +1050,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "censor",
@@ -1059,7 +1059,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "exempt",
@@ -1070,7 +1070,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "censorkick",
@@ -1079,7 +1079,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "rank",
@@ -1090,7 +1090,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "ranks",
@@ -1099,7 +1099,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "daily",
@@ -1108,7 +1108,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "give",
@@ -1119,7 +1119,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "profile",
@@ -1134,7 +1134,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "liked",
@@ -1143,7 +1143,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "bet",
@@ -1152,7 +1152,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "blackjack",
@@ -1163,7 +1163,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "hit",
@@ -1172,7 +1172,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "stand",
@@ -1181,7 +1181,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "lottery",
@@ -1193,7 +1193,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "hangman",
@@ -1202,7 +1202,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "hg",
@@ -1211,7 +1211,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "ttt",
@@ -1222,7 +1222,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "place",
@@ -1231,7 +1231,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "count",
@@ -1240,7 +1240,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "rep",
@@ -1249,7 +1249,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "reptop",
@@ -1258,7 +1258,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "ship",
@@ -1267,7 +1267,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "marry",
@@ -1276,7 +1276,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "divorce",
@@ -1285,7 +1285,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "couples",
@@ -1294,7 +1294,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "afk",
@@ -1303,7 +1303,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "remindme",
@@ -1314,7 +1314,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "poll",
@@ -1323,7 +1323,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "confess",
@@ -1332,7 +1332,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "warn",
@@ -1341,7 +1341,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "warns",
@@ -1350,7 +1350,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "unwarn",
@@ -1361,7 +1361,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "automod",
@@ -1370,7 +1370,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "mute",
@@ -1379,7 +1379,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "unmute",
@@ -1388,7 +1388,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "define",
@@ -1399,7 +1399,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "font",
@@ -1410,7 +1410,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "roast",
@@ -1419,7 +1419,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "compliment",
@@ -1430,7 +1430,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "setrole",
@@ -1441,7 +1441,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "promote",
@@ -1452,7 +1452,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "makeowner",
@@ -1464,7 +1464,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "demote",
@@ -1476,7 +1476,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "recent",
@@ -1487,7 +1487,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "next",
@@ -1496,7 +1496,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "invite",
@@ -1507,7 +1507,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "roomreport",
@@ -1516,7 +1516,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "adminlog",
@@ -1525,7 +1525,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "lastactive",
@@ -1534,7 +1534,7 @@
       "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "history",
@@ -1543,7 +1543,7 @@
       "permission": "creator",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "logdm",
@@ -1552,7 +1552,7 @@
       "permission": "creator",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "connect",
@@ -1563,7 +1563,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "disconnect",
@@ -1574,7 +1574,7 @@
       "permission": "user",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "setstatus",
@@ -1583,7 +1583,7 @@
       "permission": "creator",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "bots",
@@ -1594,7 +1594,7 @@
       "permission": "creator",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     },
     {
       "name": "botcmd",
@@ -1603,7 +1603,7 @@
       "permission": "creator",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
-      "status": "planned"
+      "status": "enabled"
     }
   ]
 }

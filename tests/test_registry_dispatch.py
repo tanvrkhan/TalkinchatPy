@@ -53,6 +53,7 @@ class RegistryDispatchTests(unittest.TestCase):
         context = DispatchContext(" Straße ", "Room", "user")
         self.assertTrue(asyncio.run(registry.dispatch(None, context, ",echo hello")))
         self.assertEqual([("strasse", "hello")], calls)
+        self.assertEqual("echo", context.invoked_name)
 
 
 if __name__ == "__main__":

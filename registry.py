@@ -20,6 +20,7 @@ class DispatchContext:
     disabled: tuple[str, ...] = ()
     room_authority: bool = False
     args: str = ""
+    invoked_name: str = ""
 
     @property
     def user_key(self):
@@ -97,6 +98,7 @@ class CommandRegistry:
         if parsed is None:
             return False
         name, context.args = parsed
+        context.invoked_name = name
         spec = self.get(name)
         if spec is None:
             return False

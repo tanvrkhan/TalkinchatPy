@@ -90,3 +90,32 @@ async def catchuno(bot, context):
 @command("resume", category="Games", needs_room=True, help="Resume a paused card game")
 async def resume(bot, context):
     await _versioned(bot, context, bot.card_sessions.resume)
+
+
+@command("playcard", aliases=("pc",), category="Games", needs_room=True,
+         help="Play a card using its private action id")
+async def play_card(bot, context):
+    if not context.args:
+        await bot.reply(context, "Usage: ,playcard <action-id>")
+        return
+    try:
+        result = await bot.card_sessions.play(
+            context.room, context.user, context.user_key, context.args.split()[0])
+    except SessionError as exc:
+        await bot.reply(context, str(exc))
+        return
+    await bot.reply(context, str(result))
+
+
+@command("drawcard", aliases=("dc",), category="Games", needs_room=True,
+         help="Draw a card on your turn")
+async def draw_card(bot, context):
+    try:
+        version = int(context.args) if context.args.isdigit() else None
+        result = await bot.card_sessions.draw(
+            context.room, context.user, context.user_key,
+            expected_version=version)
+    except (SessionError, ValueError) as exc:
+        await bot.reply(context, str(exc))
+        return
+    await bot.reply(context, str(result))
