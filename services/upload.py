@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Upload a local file to Howdies' media endpoint.
+"""Upload a local file to TalkinChat' media endpoint.
 
     POST https://howdies.app:3001/api/upload   (multipart/form-data)
     fields: file, uploadType, UserID, token
@@ -21,7 +21,7 @@ import config
 
 
 def rehost(url, kind="image", timeout=25):
-    """Download an external file and re-host it on Howdies' CDN.
+    """Download an external file and re-host it on TalkinChat' CDN.
 
     External/oversized image or audio URLs sent straight to the chat make the
     server drop the connection, so media commands route through this. Returns
@@ -51,7 +51,7 @@ def rehost(url, kind="image", timeout=25):
     else:
         ext = ".jpg"
     path = os.path.join(tempfile.gettempdir(),
-                        f"howdies_dl_{os.getpid()}_{random.randint(1, 999999)}{ext}")
+                        f"talkinchat_dl_{os.getpid()}_{random.randint(1, 999999)}{ext}")
     try:
         with open(path, "wb") as fh:
             fh.write(r.content)

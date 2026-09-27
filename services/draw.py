@@ -3,7 +3,7 @@
 """Image generation: text on a canvas, text on an avatar, welcome cards.
 
 Ported from the original TalkinchatPy bot. Returns a saved PNG path plus its
-pixel size (width, height) which Howdies needs for image messages.
+pixel size (width, height) which TalkinChat needs for image messages.
 """
 
 import random
@@ -56,7 +56,7 @@ def _resample():
 
 
 def _save_game_image(image, prefix):
-    with tempfile.NamedTemporaryFile(prefix=f"howdies-{prefix}-", suffix=".png",
+    with tempfile.NamedTemporaryFile(prefix=f"talkinchat-{prefix}-", suffix=".png",
                                      delete=False) as output:
         image.save(output, "PNG")
         return output.name, image.size

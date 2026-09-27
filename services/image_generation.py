@@ -296,7 +296,7 @@ def _save_generated_image(raw, diagnostic=None):
         )
     path = None
     try:
-        with tempfile.NamedTemporaryFile(prefix="howdies-imagine-", suffix=suffix,
+        with tempfile.NamedTemporaryFile(prefix="talkinchat-imagine-", suffix=suffix,
                                          delete=False) as output:
             output.write(raw)
             path = output.name
@@ -573,12 +573,12 @@ def _load_reference_jpeg(url, timeout, request_id=None):
     correlation_id = request_id or new_request_id()
     if not is_reference_url(url):
         raise ImageResponseError(
-            "Reference avatar is not hosted by Howdies",
+            "Reference avatar is not hosted by TalkinChat",
             ProviderDiagnostic(
                 category="invalid reference", request_id=correlation_id,
             ),
         )
-    request = urllib.request.Request(url, headers={"User-Agent": "HowdiesBot/1.0"})
+    request = urllib.request.Request(url, headers={"User-Agent": "TalkinChatBot/1.0"})
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:
             raw = response.read(MAX_REFERENCE_BYTES + 1)
@@ -624,7 +624,7 @@ def _reference_jpeg(url, timeout):
 
 
 def _multipart(fields, files):
-    boundary = f"howdies-{random.randint(1, 2_147_483_647)}"
+    boundary = f"talkinchat-{random.randint(1, 2_147_483_647)}"
     chunks = []
     for name, value in fields.items():
         chunks.extend([
@@ -785,7 +785,7 @@ def generate_image(prompt, account_id, api_token, timeout, *, request_id=None,
 
 def generate_reference_image(prompt, avatar_urls, account_id, api_token, timeout, *,
                              request_id=None, diagnostic_store=None, metadata=None):
-    """Generate a 512px image using up to two Howdies avatars as references."""
+    """Generate a 512px image using up to two TalkinChat avatars as references."""
     correlation_id = _correlation_id(request_id)
     started_at = time.monotonic()
     context = _generation_context(metadata, prompt)
