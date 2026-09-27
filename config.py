@@ -75,3 +75,7 @@ AI_BUSY_TIMEOUT = int(os.environ.get("TALKINCHAT_AI_BUSY_TIMEOUT", "25"))
 AI_KEEP_ALIVE = os.environ.get("TALKINCHAT_AI_KEEP_ALIVE", "30m")
 AI_LOCK_FILE = os.environ.get("TALKINCHAT_OLLAMA_LOCK", "/run/lock/local-ollama.lock")
 IMAGE_LOCK_FILE = os.environ.get("TALKINCHAT_IMAGE_LOCK", "/tmp/talkinchat-image.lock")
+DEFAULT_UA = os.environ.get(
+    "TALKINCHAT_HTTP_USER_AGENT",
+    "TalkinChatBot/2.0 (+https://github.com/tanvrkhan/TalkinchatPy)",
+)

@@ -17,7 +17,7 @@ install -d -m 0700 "$state_dir"
 if [[ -z "$root_prefix" ]]; then
     getent group talkinchat >/dev/null || groupadd --system talkinchat
     id talkinchat >/dev/null 2>&1 || useradd --system --gid talkinchat --home-dir /var/lib/talkinchat-bot --shell /usr/sbin/nologin talkinchat
-    chown talkinchat:talkinchat "$state_dir"
+    chown -R talkinchat:talkinchat "$state_dir"
     install -o talkinchat -g talkinchat -m 0660 /dev/null "$lock_file"
 fi
 

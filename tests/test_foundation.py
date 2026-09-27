@@ -27,6 +27,11 @@ class FoundationTests(unittest.TestCase):
             Config.from_env({"TALKINCHAT_PASSWORD": "do-not-print"})
         self.assertNotIn("do-not-print", str(caught.exception))
 
+    def test_copied_http_services_have_a_neutral_user_agent(self):
+        import config
+
+        self.assertIn("TalkinChat", config.DEFAULT_UA)
+
     def test_config_store_writes_atomically_beneath_state_directory(self):
         from config_store import ConfigStore
 

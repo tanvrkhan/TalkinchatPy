@@ -137,9 +137,10 @@ async def _handle(bot, context, name):
     if name == "ranks":
         return await _reply(bot, context, "Ranks: Bronze, Silver, Gold, Platinum, Diamond, Master.")
     if name == "profile":
-        return await _reply(bot, context, slap.stats(args or context.user))
+        return await _reply(bot, context, slap.stats(args or context.user) or {"username": args or context.user, "xp": 0})
     if name == "liked":
-        return await _reply(bot, context, "Reputation: " + str(slap.stats(args or context.user).get("rep", 0)))
+        record = slap.stats(args or context.user) or {}
+        return await _reply(bot, context, "Reputation: " + str(record.get("rep", 0)))
     if name == "reptop":
         return await _reply(bot, context, slap.rep_leaderboard())
     if name == "ship":
@@ -156,6 +157,8 @@ async def _handle(bot, context, name):
         duration, _, text = args.partition(" ")
         try:
             seconds = fun.parse_duration(duration)
+            if seconds is None:
+                raise ValueError("invalid duration")
         except (TypeError, ValueError):
             return await _reply(bot, context, "Usage: ,remindme <10m> <message>")
         values = list(bot.store.get("reminders", []))
