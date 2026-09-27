@@ -146,6 +146,15 @@ class GameCommandJourneyTests(unittest.TestCase):
         self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, context, ",crickettoss bat")))
         self.assertEqual(("m1", "alice", "bat"), bot.cricket.toss)
 
+    def test_short_bat_and_bowl_commands_choose_the_toss(self):
+        bot = Bot()
+        context = DispatchContext("Alice", "Room")
+        self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, context, ",bat")))
+        self.assertEqual(("m1", "alice", "bat"), bot.cricket.toss)
+        self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, context, ",bowl")))
+        self.assertEqual(("m1", "alice", "bowl"), bot.cricket.toss)
+        self.assertFalse(hasattr(bot.cricket, "started"))
+
     def test_all_player_cricket_actions_have_text_commands(self):
         bot = Bot()
         room = DispatchContext("Alice", "Room")

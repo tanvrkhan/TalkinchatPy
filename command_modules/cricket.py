@@ -39,15 +39,15 @@ async def cricket_queue(bot, context):
 
 
 @command("bat", aliases=("batting",), category="Games", needs_room=True,
-         help="Queue the cricket team (legacy shortcut)")
+         help="Choose to bat after winning the toss")
 async def bat(bot, context):
-    await _start(bot, context, False)
+    await _choose_toss(bot, context, "bat")
 
 
 @command("bowl", aliases=("bowling",), category="Games", needs_room=True,
-         help="Start cricket against AI (legacy shortcut)")
+         help="Choose to bowl after winning the toss")
 async def bowl(bot, context):
-    await _start(bot, context, True)
+    await _choose_toss(bot, context, "bowl")
 
 
 async def _start(bot, context, solo):
@@ -56,7 +56,11 @@ async def _start(bot, context, solo):
     except CricketManagerError as exc:
         await bot.reply(context, str(exc))
         return
-    await bot.reply(context, "Team queued." if result["kind"] == "queued" else "Match paired. Toss winner: use ,crickettoss bat or ,crickettoss bowl.")
+    await bot.reply(
+        context,
+        "Team queued." if result["kind"] == "queued"
+        else "Match paired. Toss winner: use ,bat or ,bowl.",
+    )
 
 
 @command("cricketai", category="Games", needs_room=True,
@@ -106,11 +110,18 @@ async def score(bot, context):
 @command("crickettoss", aliases=("ctoss",), category="Games",
          help="Choose batting or bowling after winning the toss")
 async def toss(bot, context):
+    decision = context.args.strip().casefold()
+    if decision not in {"bat", "bowl"}:
+        await bot.reply(context, "Use ,bat or ,bowl.")
+        return
+    await _choose_toss(bot, context, decision)
+
+
+async def _choose_toss(bot, context, decision):
     match = (bot.cricket.match_for_room(context.room) if context.room
              else bot.cricket.match_for_player(context.user_key))
-    decision = context.args.strip().casefold()
-    if not match or decision not in {"bat", "bowl"}:
-        await bot.reply(context, "Usage: ,crickettoss <bat|bowl>")
+    if not match:
+        await bot.reply(context, "No cricket toss is waiting here.")
         return
     try:
         result = await bot.cricket.toss_choice(
