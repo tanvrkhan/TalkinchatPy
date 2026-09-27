@@ -33,6 +33,16 @@ class CricketManagerTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual({"a", "b"}, set(match["room_ids"]))
         self.assertEqual((1, 2), (match["team_size"], match["overs"]))
 
+    async def test_ready_and_pair_are_separate_actions(self):
+        await self.manager.open_or_join("a", "Alpha", "Alice", "1", 1, 2, 0)
+        await self.manager.open_or_join("b", "Beta", "Bob", "2", 1, 2, 0)
+        self.assertEqual("ready", (await self.manager.ready("a"))["kind"])
+        self.assertEqual("ready", (await self.manager.ready("b"))["kind"])
+        self.assertIsNone(self.manager.match_for_room("a"))
+        result = await self.manager.pair("b")
+        self.assertEqual("paired", result["kind"])
+        self.assertEqual({"a", "b"}, set(result["match"]["room_ids"]))
+
     async def test_full_staked_lobby_rejects_without_reserving_coins(self):
         self.ledger.credit("1", 2000, "seed:1")
         self.ledger.credit("2", 2000, "seed:2")

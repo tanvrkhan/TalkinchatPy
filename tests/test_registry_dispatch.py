@@ -5,11 +5,13 @@ from registry import CommandRegistry, DispatchContext, PermissionDenied
 
 
 class RegistryDispatchTests(unittest.TestCase):
-    def test_accepts_comma_and_exclamation_with_comma_in_usage(self):
+    def test_accepts_primary_prefixes_and_dot_c_compatibility(self):
         registry = CommandRegistry()
         registry.register("ping", aliases=("p",), help="alive")
         self.assertEqual(("ping", "now"), registry.parse(",ping now"))
         self.assertEqual(("p", ""), registry.parse("!p"))
+        self.assertEqual(("c", "1"), registry.parse(".c 1"))
+        self.assertIsNone(registry.parse(".ping later"))
         self.assertIsNone(registry.parse("ping"))
         self.assertEqual(",ping", registry.all_specs()[0].usage)
 

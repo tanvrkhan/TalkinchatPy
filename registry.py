@@ -74,7 +74,8 @@ class CommandRegistry:
 
     def parse(self, text):
         value = str(text or "").strip()
-        if not value or value[0] not in {",", "!"}:
+        if not value or value[0] not in {",", "!"} and not (
+                value.casefold() == ".c" or value.casefold().startswith(".c ")):
             return None
         command_name, _, args = value[1:].partition(" ")
         if not command_name:

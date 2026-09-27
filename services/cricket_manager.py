@@ -162,11 +162,8 @@ class CricketManager:
                         "players": [*current["players"], *teammates],
                     },
                 )
-        try:
-            self.store.queue_team(room)
-        except StoreError as exc:
-            raise CricketManagerError(str(exc)) from exc
-        pair = self.store.pair_oldest()
+        await self.ready(room)
+        pair = self.store.pair_room(room)
         if pair is None and solo:
             lobby = self.store.lobby(room)
             if lobby is None:
@@ -183,11 +180,27 @@ class CricketManager:
             }
             self.store.save_lobby(opponent)
             self.store.queue_team(synthetic_room)
-            pair = self.store.pair_oldest()
+            pair = self.store.pair_room(room)
         if pair is None:
             return {"kind": "queued", "lobby": self.store.lobby(room)}
         match = self._activate_pair(pair)
         return {"kind": "paired", "match": match}
+
+    async def ready(self, room_id):
+        try:
+            lobby = self.store.queue_team(str(room_id))
+        except StoreError as exc:
+            raise CricketManagerError(str(exc)) from exc
+        return {"kind": "ready", "lobby": lobby}
+
+    async def pair(self, room_id):
+        try:
+            pair = self.store.pair_room(str(room_id))
+        except StoreError as exc:
+            raise CricketManagerError(str(exc)) from exc
+        if pair is None:
+            return {"kind": "queued", "lobby": self.store.lobby(str(room_id))}
+        return {"kind": "paired", "match": self._activate_pair(pair)}
 
     def _activate_pair(self, pair):
         team_a = self._team_from_lobby(pair["team_a"])

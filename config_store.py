@@ -16,6 +16,7 @@ DEFAULTS = {
     "custom_welcomes": {},
     "welcome_images": {},
     "room_authorities": {},
+    "cricket_rooms": {},
 }
 
 

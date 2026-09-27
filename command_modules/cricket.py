@@ -8,9 +8,35 @@ def _player_key(context):
     return f"uid:{context.user_key}"
 
 
+def _enabled(bot, room):
+    return dict(bot.store.get("cricket_rooms", {})).get(str(room).casefold(), True)
+
+
+async def _require_enabled(bot, context):
+    if _enabled(bot, context.room):
+        return True
+    await bot.reply(context, "Cricket is off in this room. A room admin can use .c 1.")
+    return False
+
+
+@command("c", category="Games", needs_room=True, room_admin=True,
+         help="Turn cricket on or off", usage=".c <0|1>")
+async def cricket_switch(bot, context):
+    value = context.args.strip()
+    if value not in {"0", "1"}:
+        await bot.reply(context, "Use .c 1 for cricket on or .c 0 for cricket off.")
+        return
+    rooms = dict(bot.store.get("cricket_rooms", {}))
+    rooms[str(context.room).casefold()] = value == "1"
+    bot.store.set("cricket_rooms", rooms)
+    await bot.reply(context, f"Cricket is now {'on' if value == '1' else 'off'} in this room.")
+
+
 @command("cricket", aliases=("cric",), category="Games", needs_room=True,
          help="Open or join cross-room cricket")
 async def cricket(bot, context):
+    if not await _require_enabled(bot, context):
+        return
     values = context.args.split()
     try:
         team_size = int(values[0]) if values else 3
@@ -33,13 +59,47 @@ async def cricket(bot, context):
 @command("cricketsolo", aliases=("cricsolo",), category="Games", needs_room=True,
          help="Start cricket immediately against AI")
 async def cricket_solo(bot, context):
+    if not await _require_enabled(bot, context):
+        return
     await _start(bot, context, True)
 
 
 @command("cricketqueue", aliases=("cricqueue",), category="Games", needs_room=True,
          help="Queue cricket against another room")
 async def cricket_queue(bot, context):
+    if not await _require_enabled(bot, context):
+        return
     await _start(bot, context, False)
+
+
+@command("ready", aliases=("cricketready", "cready", "teamready"),
+         category="Games", needs_room=True, help="Mark your cricket team ready")
+async def cricket_ready(bot, context):
+    if not await _require_enabled(bot, context):
+        return
+    try:
+        await bot.cricket.ready(context.room)
+    except CricketManagerError as exc:
+        await bot.reply(context, str(exc))
+        return
+    await bot.reply(context, "Team ready. Use ,match to look for an opponent.")
+
+
+@command("match", aliases=("cricketmatch", "cmatch", "pair"),
+         category="Games", needs_room=True, help="Pair your ready cricket team")
+async def cricket_match(bot, context):
+    if not await _require_enabled(bot, context):
+        return
+    try:
+        result = await bot.cricket.pair(context.room)
+    except CricketManagerError as exc:
+        await bot.reply(context, str(exc))
+        return
+    await bot.reply(
+        context,
+        "Still waiting for a compatible team." if result["kind"] == "queued"
+        else "Match paired. Toss winner: use ,bat or ,bowl.",
+    )
 
 
 @command("bat", aliases=("batting",), category="Games", needs_room=True,

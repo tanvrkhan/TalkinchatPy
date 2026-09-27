@@ -61,6 +61,14 @@ class FakeCricket:
         self.started = (room, solo)
         return {"kind": "paired", "match": {}}
 
+    async def ready(self, room):
+        self.readied = room
+        return {"kind": "ready", "lobby": {}}
+
+    async def pair(self, room):
+        self.pair_requested = room
+        return {"kind": "queued", "lobby": {}}
+
     async def add_ai(self, room, user, user_key):
         self.ai = (room, user, user_key)
         return {"kind": "ai_added"}
@@ -93,6 +101,7 @@ class Bot:
         self.card_sessions = FakeCards()
         self.cricket = FakeCricket()
         self.replies = []
+        self.store = MemoryStore()
 
     async def reply(self, context, text):
         self.replies.append(str(text))
@@ -104,6 +113,17 @@ class Transport:
 
     async def send_dm(self, user, text):
         self.bot.replies.append(str(text))
+
+
+class MemoryStore:
+    def __init__(self):
+        self.values = {}
+
+    def get(self, key, default=None):
+        return self.values.get(key, default)
+
+    def set(self, key, value):
+        self.values[key] = value
 
 
 class GameCommandJourneyTests(unittest.TestCase):
@@ -183,6 +203,23 @@ class GameCommandJourneyTests(unittest.TestCase):
         self.assertEqual(("Room", "Alice", "alice"), bot.cricket.left)
         self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, room, ",cricketend")))
         self.assertEqual(("Room", "uid:alice", False), bot.cricket.cancelled)
+
+    def test_cricket_room_switch_and_separate_ready_pair_commands(self):
+        bot = Bot()
+        admin = DispatchContext("Admin", "Room", level="admin")
+        player = DispatchContext("Alice", "Room")
+
+        self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, admin, ".c 0")))
+        self.assertFalse(bot.store.get("cricket_rooms")["room"])
+        self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, player, ",cricket")))
+        self.assertIn("off", bot.replies[-1].casefold())
+
+        self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, admin, ".c 1")))
+        self.assertTrue(bot.store.get("cricket_rooms")["room"])
+        self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, player, ",ready")))
+        self.assertEqual("Room", bot.cricket.readied)
+        self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, player, ",match")))
+        self.assertEqual("Room", bot.cricket.pair_requested)
 
     def test_numbered_cricket_alias_submits_real_delivery(self):
         bot = Bot()

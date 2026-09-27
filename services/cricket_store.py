@@ -146,6 +146,42 @@ class CricketStore:
             self._write(state)
             return match
 
+    def pair_room(self, room_id):
+        room = str(room_id)
+        with self._locked():
+            state = self._read()
+            queued = sorted(
+                state["queue"], key=lambda item: (item["queued_at"], item["room_id"])
+            )
+            requested = next((item for item in queued if item["room_id"] == room), None)
+            if requested is None:
+                raise StoreError("Use ,ready before asking for a match.")
+            opponent = next(
+                (item for item in queued
+                 if item["room_id"] != room and item["format"] == requested["format"]),
+                None,
+            )
+            if opponent is None:
+                return None
+            first, second = sorted(
+                (requested, opponent), key=lambda item: (item["queued_at"], item["room_id"])
+            )
+            match_id = uuid.uuid4().hex
+            match = {
+                "match_id": match_id, "revision": 1, "phase": "paired",
+                "room_ids": [first["room_id"], second["room_id"]],
+                "team_a": copy.deepcopy(state["lobbies"].pop(first["room_id"])),
+                "team_b": copy.deepcopy(state["lobbies"].pop(second["room_id"])),
+                "paired_at": float(self._now()),
+            }
+            paired_rooms = set(match["room_ids"])
+            state["queue"] = [
+                item for item in state["queue"] if item["room_id"] not in paired_rooms
+            ]
+            state["matches"][match_id] = copy.deepcopy(match)
+            self._write(state)
+            return match
+
     def save_match(self, match_id, snapshot):
         with self._locked():
             state = self._read()
