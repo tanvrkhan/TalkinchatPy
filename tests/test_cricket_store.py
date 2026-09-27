@@ -86,6 +86,18 @@ class CricketStoreTests(unittest.TestCase):
         created = self.store.save_lobby(lobby("a", "Alice", 1))
         self.assertEqual("a", created["room_id"])
 
+    def test_active_match_can_be_resolved_for_private_player_commands(self):
+        self.store.save_match("m1", {
+            "match_id": "m1", "revision": 1, "phase": "toss",
+            "room_ids": ["a", "b"],
+            "teams": {
+                "a": {"players": [{"key": "alice", "ai": False}]},
+                "b": {"players": [{"key": "bob", "ai": False}]},
+            },
+        })
+        self.assertEqual("m1", self.store.match_for_player("ALICE")["match_id"])
+        self.assertIsNone(self.store.match_for_player("outsider"))
+
 
 if __name__ == "__main__":
     unittest.main()

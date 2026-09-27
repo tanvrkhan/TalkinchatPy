@@ -205,6 +205,9 @@ class CricketManager:
     def match_for_room(self, room_id):
         return self.store.match_for_room(room_id)
 
+    def match_for_player(self, player_key):
+        return self.store.match_for_player(player_key)
+
     async def toss_choice(self, match_id, player_key, decision):
         current = self.store.load_match(match_id)
         if current is None:

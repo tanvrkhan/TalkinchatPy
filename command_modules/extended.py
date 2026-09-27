@@ -25,7 +25,7 @@ ROOM_ADMIN = {
 CAPABILITY_MESSAGES = {
     "buttonprobe": "Interactive buttons are not supported by the verified TalkinChat protocol; text controls are active.",
     "buttontest": "Interactive buttons are not supported by the verified TalkinChat protocol; text controls are active.",
-    "buttonwatch": "TalkinChat button events are not part of the verified protocol.",
+    "buttonwatch": "TalkinChat 5.8.3 has no native interactive-message schema; numbered text controls are active.",
     "accessprobe": "TalkinChat does not expose an authoritative room access probe.",
     "profileprobe": "TalkinChat profile reads are not part of the verified protocol.",
     "audienceprobe": "TalkinChat does not expose an authoritative room audience list.",
@@ -170,9 +170,25 @@ async def _handle(bot, context, name):
         if not separator:
             return await _reply(bot, context, "Usage: ,poll question | option 1 | option 2")
         values = _map(bot, "polls")
-        values[room] = {"question": question.strip(), "choices": [x.strip() for x in choices.split("|") if x.strip()]}
+        values[room] = {"question": question.strip(), "choices": [x.strip() for x in choices.split("|") if x.strip()], "votes": {}}
         bot.store.set("polls", values)
-        return await _reply(bot, context, question.strip() + "\n" + "\n".join(f"{i + 1}. {v}" for i, v in enumerate(values[room]["choices"])))
+        return await _reply(bot, context, question.strip() + "\n" + "\n".join(f"{i + 1}. {v} - ,vote {i + 1}" for i, v in enumerate(values[room]["choices"])))
+    if name == "vote":
+        polls = _map(bot, "polls")
+        poll = dict(polls.get(room, {}))
+        try:
+            choice = int(args)
+            selected = poll["choices"][choice - 1]
+            if choice < 1:
+                raise IndexError
+        except (ValueError, IndexError, KeyError):
+            return await _reply(bot, context, "Use ,vote <number> on an active poll.")
+        votes = dict(poll.get("votes", {}))
+        votes[key] = choice
+        poll["votes"] = votes
+        polls[room] = poll
+        bot.store.set("polls", polls)
+        return await _reply(bot, context, f"Vote recorded for {selected}.")
     if name == "confess":
         return await bot.transport.say(context.room, "Anonymous confession: " + (args or "(empty)"))
     if name in {"warns", "unwarn", "automod", "exempt"}:

@@ -172,6 +172,19 @@ class CricketStore:
                     return copy.deepcopy(match)
         return None
 
+    def match_for_player(self, player_key):
+        player_key = str(player_key).casefold()
+        with self._locked():
+            for match in self._read()["matches"].values():
+                if match.get("phase") == "finished":
+                    continue
+                players = [player for team in match.get("teams", {}).values()
+                           for player in team.get("players", [])]
+                if any(str(player.get("key", "")).casefold() == player_key
+                       for player in players):
+                    return copy.deepcopy(match)
+        return None
+
     def mutate_match(self, match_id, expected_revision, callback):
         key = str(match_id)
         with self._locked():

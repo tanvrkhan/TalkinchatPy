@@ -347,7 +347,7 @@ class CardSessionManager:
                         "card_id": card["id"],
                     }
                     buttons.append(
-                        {"label": self._card_label(card), "message": f"{prefix}play {action_id}"}
+                        {"label": self._card_label(card), "message": f"{prefix}playcard {action_id}"}
                     )
                 buttons.extend(self._state_action_buttons(candidate, player["key"], prefix))
             elif allow_actions and candidate["phase"] == "paused":
@@ -1755,12 +1755,12 @@ class CardSessionManager:
                     for color in _COLORS
                 )
             if state.get("phase") == "playing" and state.get("current_player") == player_key:
-                buttons.append({"label": "Draw", "message": f"{prefix}draw {version}"})
+                buttons.append({"label": "Draw", "message": f"{prefix}drawcard {version}"})
             if state.get("wild4_target") == player_key:
                 buttons.append({"label": "Challenge", "message": f"{prefix}challenge {version}"})
             window = state.get("uno_window") or {}
             if window.get("player") == player_key:
-                buttons.append({"label": "UNO!", "message": f"{prefix}uno {version}"})
+                buttons.append({"label": "UNO!", "message": f"{prefix}calluno {version}"})
             elif window.get("player") is not None and player_key in state.get("players", []):
                 buttons.append({"label": "Catch UNO", "message": f"{prefix}catchuno {version}"})
         return buttons

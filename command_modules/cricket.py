@@ -39,7 +39,44 @@ async def _start(bot, context, solo):
     except CricketManagerError as exc:
         await bot.reply(context, str(exc))
         return
-    await bot.reply(context, "Team queued." if result["kind"] == "queued" else "Match paired. Captains will receive toss choices privately.")
+    await bot.reply(context, "Team queued." if result["kind"] == "queued" else "Match paired. Toss winner: use ,crickettoss bat or ,crickettoss bowl.")
+
+
+@command("cricketai", category="Games", needs_room=True,
+         help="Add an AI player to the cricket lobby")
+async def add_ai(bot, context):
+    try:
+        result = await bot.cricket.add_ai(
+            context.room, context.user, context.user_key)
+    except CricketManagerError as exc:
+        await bot.reply(context, str(exc))
+        return
+    await bot.reply(context, str(result))
+
+
+@command("cricketleave", aliases=("cricleave",), category="Games", needs_room=True,
+         help="Leave the cricket lobby")
+async def leave(bot, context):
+    try:
+        result = await bot.cricket.leave(
+            context.room, context.user, context.user_key)
+    except CricketManagerError as exc:
+        await bot.reply(context, str(exc))
+        return
+    await bot.reply(context, str(result))
+
+
+@command("cricketend", aliases=("cricend",), category="Games", needs_room=True,
+         help="End your cricket lobby or match")
+async def end(bot, context):
+    try:
+        result = await bot.cricket.cancel(
+            context.room, player_key=context.user_key,
+            is_admin=context.level in {"admin", "creator"} or context.room_authority)
+    except CricketManagerError as exc:
+        await bot.reply(context, str(exc))
+        return
+    await bot.reply(context, str(result))
 
 
 @command("cricketscore", aliases=("cs",), category="Games", needs_room=True,
@@ -49,10 +86,29 @@ async def score(bot, context):
     await bot.reply(context, str(match) if match else "No cricket match is active here.")
 
 
+@command("crickettoss", aliases=("ctoss",), category="Games",
+         help="Choose batting or bowling after winning the toss")
+async def toss(bot, context):
+    match = (bot.cricket.match_for_room(context.room) if context.room
+             else bot.cricket.match_for_player(context.user_key))
+    decision = context.args.strip().casefold()
+    if not match or decision not in {"bat", "bowl"}:
+        await bot.reply(context, "Usage: ,crickettoss <bat|bowl>")
+        return
+    try:
+        result = await bot.cricket.toss_choice(
+            match["match_id"], context.user_key, decision)
+    except (KeyError, CricketManagerError) as exc:
+        await bot.reply(context, str(exc))
+        return
+    await bot.reply(context, str(result))
+
+
 @command("b", aliases=tuple(f"b{number}" for number in range(1, 7)),
          category="Games", help="Submit a private cricket choice")
 async def choice(bot, context):
-    match = bot.cricket.match_for_room(context.room)
+    match = (bot.cricket.match_for_room(context.room) if context.room
+             else bot.cricket.match_for_player(context.user_key))
     if not match:
         await bot.reply(context, "No cricket match is active here.")
         return
@@ -73,6 +129,25 @@ async def choice(bot, context):
             match["match_id"], context.user_key, side, number, match["revision"])
     except (KeyError, TypeError, ValueError, CricketManagerError) as exc:
         await bot.reply(context, str(exc) or "Use ,b1 through ,b6.")
+        return
+    await bot.reply(context, str(result))
+
+
+@command("cricketproxy", aliases=("cproxy",), category="Games",
+         help="Choose for your team's AI batter or bowler")
+async def proxy(bot, context):
+    match = (bot.cricket.match_for_room(context.room) if context.room
+             else bot.cricket.match_for_player(context.user_key))
+    values = context.args.split()
+    if not match or len(values) != 2 or values[0].casefold() not in {"bat", "bowl"}:
+        await bot.reply(context, "Usage: ,cricketproxy <bat|bowl> <1-6>")
+        return
+    try:
+        result = await bot.cricket.proxy_choice(
+            match["match_id"], context.user_key, values[0].casefold(),
+            int(values[1]), match["revision"])
+    except (KeyError, ValueError, CricketManagerError) as exc:
+        await bot.reply(context, str(exc))
         return
     await bot.reply(context, str(result))
 

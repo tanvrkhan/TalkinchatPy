@@ -330,7 +330,7 @@ def draw_cricket_score(match, events=()):
         canvas.text((145, 571), "First ball waiting", font=_font(24), fill=cream)
 
     canvas.line((40, 640, 960, 640), fill=line, width=2)
-    canvas.text((40, 656), "Tap your number button and send. Choices reveal together.",
+    canvas.text((40, 656), "Send ,b1 through ,b6. Choices reveal together.",
                 font=_font(19), fill=muted)
     return _save_game_image(image, "cricket")
 

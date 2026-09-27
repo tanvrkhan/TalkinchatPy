@@ -304,7 +304,7 @@ def private_prompt(state, player_key, prefix=","):
         "revision": state["revision"],
         "buttons": [
             {"label": str(number),
-             "message": f"{prefix}cricket choose {role} {number} {state['revision']}"}
+             "message": f"{prefix}b{number}"}
             for number in range(1, 7)
         ],
     }

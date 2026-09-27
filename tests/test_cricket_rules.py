@@ -92,6 +92,10 @@ class CricketRulesTests(unittest.TestCase):
         prompt = cricket.private_prompt(state, state["innings"]["striker"])
         self.assertEqual(["1", "2", "3", "4", "5", "6"],
                          [button["label"] for button in prompt["buttons"]])
+        self.assertEqual(
+            [",b1", ",b2", ",b3", ",b4", ",b5", ",b6"],
+            [button["message"] for button in prompt["buttons"]],
+        )
 
     def test_stale_choice_never_mutates_state(self):
         state = self.start(self.match())
