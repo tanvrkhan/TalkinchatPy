@@ -13,6 +13,7 @@ DEFAULTS = {
     "room_names": {},
     "welcome_rooms": {},
     "custom_welcomes": {},
+    "welcome_images": {},
     "room_authorities": {},
 }
 

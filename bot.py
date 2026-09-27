@@ -5,6 +5,8 @@ import asyncio
 import inspect
 import os
 import secrets
+import tempfile
+from pathlib import Path
 
 from websockets.exceptions import WebSocketException
 
@@ -87,6 +89,7 @@ class TalkinChatBot:
                 self.activity.record_presence(
                     event.event_id or f"join:{hash(frame)}", event.room, event.room,
                     event.user_key, event.user, "join")
+                await self.handle_join(event)
 
     async def run_forever(self):
         await self.initialize()
@@ -147,6 +150,41 @@ class TalkinChatBot:
             detail="",
         )
 
+    async def handle_join(self, event):
+        room_key = event.room.casefold()
+        if not self.store.get("welcome_rooms", {}).get(room_key, False):
+            return
+        template = self.store.get("custom_welcomes", {}).get(room_key, "Welcome {user}!")
+        try:
+            message = str(template).format(user=event.user, room=event.room)
+        except (KeyError, ValueError):
+            message = f"Welcome {event.user}!"
+        if self.store.get("welcome_images", {}).get(room_key, False):
+            path = None
+            try:
+                from services.draw import draw_welcome
+                path = await asyncio.to_thread(draw_welcome, event.user, event.room)
+                url = await self.transport.upload(path, event.room, "image/png")
+                await self.transport.send_image(event.room, url)
+                return
+            except Exception:
+                pass
+            finally:
+                if path:
+                    Path(path).unlink(missing_ok=True)
+        await self.transport.say(event.room, message)
+
+
+def check_readiness(config):
+    config.state_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
+    os.chmod(config.state_dir, 0o700)
+    lock_parent = config.ollama_lock.parent
+    lock_parent.mkdir(mode=0o770, parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(dir=config.state_dir, prefix=".readiness-", delete=True):
+        pass
+    if not os.access(lock_parent, os.W_OK):
+        raise ConfigError(f"Ollama lock directory is not writable: {lock_parent}")
+
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
@@ -157,7 +195,11 @@ def main(argv=None):
         config = Config.from_env(os.environ)
     except ConfigError as exc:
         parser.error(str(exc))
-    if args.check_config or args.check_readiness:
+    if args.check_readiness:
+        check_readiness(config)
+        print("TalkinChat configuration and local runtime paths are ready.")
+        return 0
+    if args.check_config:
         print("TalkinChat configuration is valid.")
         return 0
     asyncio.run(TalkinChatBot(config).run_forever())
