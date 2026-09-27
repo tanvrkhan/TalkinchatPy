@@ -53,18 +53,20 @@ class SlapHealthTests(unittest.TestCase):
         self.assertEqual(result["health"], 0)
         self.assertEqual(result["wait"], 50)
 
-    def test_fight_preserves_scoring_and_applies_deterministic_critical(self):
+    def test_slap_immediately_plays_against_bot_without_pending_human(self):
         self.seed("Alice", xp=10_000, health=100, health_updated_at=2_000)
-        self.seed("Bob", xp=10_000, health=100, health_updated_at=2_000)
-        slap.slap("Alice", 1, 7, "", now=2_000)
         with mock.patch.object(slap.random, "randint", return_value=0), \
                 mock.patch.object(slap.random, "random", return_value=0.05):
-            result = slap.slap("Bob", 2, 8, "", now=2_000)
+            result = slap.slap("Alice", 1, 7, "", now=2_000)
+        self.assertEqual("fight", result["action"])
+        self.assertEqual("Alice", result["winner"]["name"])
+        self.assertEqual("TalkinChat Bot", result["loser"]["name"])
+        self.assertIsNone(slap.pending())
         self.assertTrue(result["critical"])
         self.assertEqual(result["damage"], 50)
         self.assertEqual(result["loser"]["health"], 50)
         self.assertEqual(result["gained"], slap.WIN_BASE)
-        self.assertEqual(result["lost"], slap.LOSS_BASE)
+        self.assertEqual(result["lost"], 0)
 
     def test_add_xp_once_persists_xp_and_award_key_atomically(self):
         first = slap.add_xp_once("Alice", "1", 5_000, "card:one:reward:alice")

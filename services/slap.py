@@ -467,7 +467,7 @@ def pending():
 
 
 def slap(user, userid, roomid, avatar, now=None):
-    """Process a !slap. Returns a dict describing what happened."""
+    """Play one immediate slap round against the bot."""
     global _pending
     now = time.time() if now is None else float(now)
 
@@ -476,55 +476,43 @@ def slap(user, userid, roomid, avatar, now=None):
         return {"action": "health", "health": current["health"],
                 "wait": seconds_until_fight_ready(user, now)}
 
-    if _pending and _pending["user"].lower() == user.lower():
-        return {"action": "already"}
-
-    if _pending:                      # a fight!
-        opp = _pending
-        opponent_health = health(opp["user"], now)
-        if opponent_health["health"] < FIGHT_MIN_HEALTH:
-            _pending = None
-            return {"action": "opponent_health", "user": opp["user"],
-                    "health": opponent_health["health"]}
-        _pending = None
-        me = {"name": user, "userid": userid, "room": roomid, "avatar": avatar}
-        foe = {"name": opp["user"], "userid": opp["userid"],
-               "room": opp["roomid"], "avatar": opp["avatar"]}
-        players = [me, foe]
-        winner = players[random.randint(0, 1)]
-        loser = players[1] if winner is players[0] else players[0]
-
-        wrec, lrec = _rec(winner["name"]), _rec(loser["name"])
-        wrec["userid"], lrec["userid"] = winner["userid"], loser["userid"]
-        wrec["username"], lrec["username"] = winner["name"], loser["name"]
-
-        wrec["streak"] = wrec.get("streak", 0) + 1
-        gained = WIN_BASE * wrec["streak"]
-        wrec["xp"] += gained
-        wrec["wins"] += 1
-
-        before = lrec["xp"]
-        lrec["xp"] = max(0, lrec["xp"] - LOSS_BASE)
-        lost = before - lrec["xp"]
-        lrec["losses"] += 1
-        lrec["streak"] = 0
-        critical = random.random() < CRITICAL_CHANCE
-        damage = apply_slap_damage(loser["name"], critical, now)
-        winner_health = health(winner["name"], now)["health"]
-        _save()
-
-        return {
-            "action": "fight",
-            "winner": {**winner, "xp": wrec["xp"], "streak": wrec["streak"],
-                       "health": winner_health},
-            "loser": {**loser, "xp": lrec["xp"], "health": damage["health"]},
-            "gained": gained, "lost": lost, "streak": wrec["streak"],
-            "critical": critical, **damage,
-        }
-
-    _pending = {"user": user, "userid": userid, "roomid": roomid,
-                "avatar": avatar, "t": now}
-    return {"action": "raised", "room": roomid, "avatar": avatar}
+    _pending = None
+    human = {"name": user, "userid": userid, "room": roomid, "avatar": avatar}
+    bot = {"name": "TalkinChat Bot", "userid": "bot", "room": roomid, "avatar": ""}
+    human_wins = random.randint(0, 1) == 0
+    winner, loser = (human, bot) if human_wins else (bot, human)
+    record = _rec(user)
+    record["userid"] = userid
+    record["username"] = user
+    critical = random.random() < CRITICAL_CHANCE
+    gained = lost = 0
+    damage = {"base_damage": CRITICAL_DAMAGE if critical else NORMAL_DAMAGE,
+              "damage": 0, "health": 100, "blocked": False, "armor": False}
+    if human_wins:
+        record["streak"] = record.get("streak", 0) + 1
+        gained = WIN_BASE * record["streak"]
+        record["xp"] += gained
+        record["wins"] += 1
+        damage["damage"] = damage["base_damage"]
+        damage["health"] = max(0, 100 - damage["damage"])
+    else:
+        before = record["xp"]
+        record["xp"] = max(0, record["xp"] - LOSS_BASE)
+        lost = before - record["xp"]
+        record["losses"] += 1
+        record["streak"] = 0
+        damage = apply_slap_damage(user, critical, now)
+    _save()
+    return {
+        "action": "fight",
+        "winner": {**winner, "xp": record["xp"] if human_wins else 0,
+                   "streak": record["streak"] if human_wins else 0,
+                   "health": health(user, now)["health"] if human_wins else 100},
+        "loser": {**loser, "xp": record["xp"] if not human_wins else 0,
+                  "health": damage["health"]},
+        "gained": gained, "lost": lost, "streak": record["streak"],
+        "critical": critical, **damage,
+    }
 
 
 def spin(user, userid):

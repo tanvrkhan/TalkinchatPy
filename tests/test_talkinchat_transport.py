@@ -6,6 +6,7 @@ from transports.talkinchat import (
     TalkinChatTransport,
     message_payload,
     room_payload,
+    protobuf_fields,
 )
 
 
@@ -43,6 +44,14 @@ class PayloadTests(unittest.TestCase):
         transport = TalkinChatTransport(socket, "bot", "pw", id_factory=lambda: "fixed")
         with self.assertRaises(ValueError):
             asyncio.run(transport.send_audio("Room", "https://audio", 601))
+
+    def test_room_text_is_bounded_before_it_reaches_websocket(self):
+        socket = Socket()
+        transport = TalkinChatTransport(socket, "bot", "pw", id_factory=lambda: "fixed")
+        asyncio.run(transport.say("Room", "x" * 5000))
+        fields = protobuf_fields(socket.sent[0])
+        self.assertLessEqual(len(fields[5][0]), 900)
+        self.assertTrue(fields[5][0].decode().endswith("..."))
 
 
 if __name__ == "__main__":

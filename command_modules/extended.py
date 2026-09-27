@@ -236,7 +236,21 @@ async def _handle_game(bot, context, name):
     current = dict(sessions.get(room, {}))
 
     if name == "slap":
-        return await _reply(bot, context, slap.slap(context.user, context.user_key, context.room, ""))
+        result = slap.slap(context.user, context.user_key, context.room, "")
+        if result["action"] == "health":
+            return await _reply(
+                bot, context,
+                f"You need more health. Current health: {result['health']}; "
+                f"try again in {result['wait']} seconds.",
+            )
+        critical = " Critical hit!" if result.get("critical") else ""
+        reward = (f" +{result['gained']} XP." if result.get("gained")
+                  else f" -{result.get('lost', 0)} XP.")
+        return await _reply(
+            bot, context,
+            f"{result['winner']['name']} slapped {result['loser']['name']}."
+            f"{critical}{reward} Loser health: {result['loser']['health']}.",
+        )
     if name in {"bomb", "cut", "tb"}:
         bombs = _map(bot, "bombs")
         if name == "bomb":

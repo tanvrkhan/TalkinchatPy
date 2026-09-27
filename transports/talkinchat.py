@@ -183,6 +183,14 @@ SUPPORTED = frozenset({
     Capabilities.MEDIA,
     Capabilities.ROOM_MEMBERSHIP,
 })
+MAX_TEXT_BYTES = 900
+
+
+def _bounded_text(value):
+    encoded = str(value).encode("utf-8")
+    if len(encoded) <= MAX_TEXT_BYTES:
+        return str(value)
+    return encoded[:MAX_TEXT_BYTES - 3].decode("utf-8", errors="ignore") + "..."
 
 
 @dataclass(frozen=True)
@@ -327,14 +335,14 @@ class TalkinChatTransport:
 
     async def say(self, room, text):
         return await self._send(message_payload(
-            "room_message", room, "text", self.id_factory(), body=str(text)))
+            "room_message", room, "text", self.id_factory(), body=_bounded_text(text)))
 
     async def reply(self, room, text):
         return await self.say(room, text)
 
     async def send_dm(self, username, text):
         return await self._send(message_payload(
-            "chat_message", username, "text", self.id_factory(), body=str(text)))
+            "chat_message", username, "text", self.id_factory(), body=_bounded_text(text)))
 
     async def send_image(self, room, url):
         return await self._send(message_payload(
