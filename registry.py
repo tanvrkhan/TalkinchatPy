@@ -18,6 +18,7 @@ class DispatchContext:
     room: str = ""
     level: str = "user"
     disabled: tuple[str, ...] = ()
+    room_authority: bool = False
     args: str = ""
 
     @property
@@ -85,6 +86,9 @@ class CommandRegistry:
             raise PermissionDenied("This command is disabled.")
         if LEVELS.get(context.level, 0) < LEVELS.get(spec.level, 0):
             raise PermissionDenied("You do not have permission to use this command.")
+        if (spec.room_admin and LEVELS.get(context.level, 0) < LEVELS["admin"]
+                and not context.room_authority):
+            raise PermissionDenied("You do not have permission to moderate this room.")
         if spec.needs_room and context.is_dm:
             raise PermissionDenied("This command must be used in a room.")
 

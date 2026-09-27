@@ -4,11 +4,12 @@ import argparse
 import asyncio
 import inspect
 import os
+import secrets
 
 import commands  # noqa: F401  # register command modules
 from config import Config, ConfigError
 from config_store import ConfigStore
-from registry import DispatchContext, REGISTRY
+from registry import DispatchContext, PermissionDenied, REGISTRY
 from services.auth import AccessControl
 from services.activity_store import ActivityStore
 from services.card_session import CardSessionManager
@@ -29,7 +30,7 @@ class TalkinChatBot:
         self.decoder = EventDecoder()
         self.transport = None
         self.store = ConfigStore(config.state_dir)
-        self.access = AccessControl(config.owner, self.store.get("admins", []))
+        self.refresh_access()
         self.activity = ActivityStore(config.state_dir / "activity.sqlite3")
         self.card_sessions = CardSessionManager(
             GameStore(config.state_dir / "card_games.json"))
@@ -77,7 +78,7 @@ class TalkinChatBot:
                     self.access.level_of(event.user),
                     tuple(self.store.get("disabled", [])),
                 )
-                await self.registry.dispatch(self, context, event.body)
+                await self.dispatch(context, event.body)
             elif event.kind == EventKind.USER_JOINED:
                 self.activity.record_presence(
                     event.event_id or f"join:{hash(frame)}", event.room, event.room,
@@ -99,6 +100,41 @@ class TalkinChatBot:
         if context.is_dm:
             return await self.transport.send_dm(context.user, text)
         return await self.transport.reply(context.room, text)
+
+    def refresh_access(self):
+        self.access = AccessControl(
+            self.config.owner,
+            self.store.get("admins", []),
+            self.store.get("room_authorities", {}),
+        )
+
+    async def dispatch(self, context, text):
+        parsed = self.registry.parse(text)
+        if parsed is None:
+            return False
+        spec = self.registry.get(parsed[0])
+        if spec is None:
+            return False
+        context.room_authority = self.access.has_level(
+            context.user, "admin", room=context.room, allow_room_admin=True)
+        privileged = spec.room_admin or spec.level in {"admin", "creator"}
+        try:
+            handled = await self.registry.dispatch(self, context, text)
+        except PermissionDenied as exc:
+            if privileged:
+                self._audit(context, spec.name, "rejected")
+            await self.reply(context, str(exc))
+            return True
+        if handled and privileged:
+            self._audit(context, spec.name, "success")
+        return handled
+
+    def _audit(self, context, action, outcome):
+        self.activity.record_admin_action(
+            secrets.token_hex(16), context.room, context.room,
+            context.user_key, context.user, "", "", action, outcome,
+            detail="",
+        )
 
 
 def main(argv=None):

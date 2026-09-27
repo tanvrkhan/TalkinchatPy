@@ -25,6 +25,23 @@ class RegistryDispatchTests(unittest.TestCase):
         with self.assertRaises(PermissionDenied):
             registry.authorize(registry.get("admin"), DispatchContext("a", "R", "admin", ("admin",)))
 
+    def test_room_admin_command_requires_global_or_current_room_authority(self):
+        registry = CommandRegistry()
+        registry.register("warn", room_admin=True)
+        with self.assertRaises(PermissionDenied):
+            registry.authorize(
+                registry.get("warn"),
+                DispatchContext("ordinary", "Room", "user"),
+            )
+        registry.authorize(
+            registry.get("warn"),
+            DispatchContext("local-mod", "Room", "user", room_authority=True),
+        )
+        registry.authorize(
+            registry.get("warn"),
+            DispatchContext("global-mod", "Room", "admin"),
+        )
+
     def test_dispatch_invokes_real_handler(self):
         calls = []
 
