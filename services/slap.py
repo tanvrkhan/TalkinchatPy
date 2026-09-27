@@ -29,7 +29,10 @@ import fcntl
 
 DATA_FILE = os.environ.get(
     "TALKINCHAT_SLAP_FILE",
-    os.path.join(os.path.dirname(os.path.dirname(__file__)), "slap_data.json"))
+    os.path.join(
+        os.environ.get("TALKINCHAT_STATE_DIR", "/var/lib/talkinchat-bot"),
+        "slap_data.json",
+    ))
 
 WIN_BASE = 10000     # winner gains WIN_BASE * current_streak
 LOSS_BASE = 5000     # loser loses this (floored at 0)

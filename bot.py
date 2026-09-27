@@ -6,6 +6,8 @@ import inspect
 import os
 import secrets
 
+from websockets.exceptions import WebSocketException
+
 import commands  # noqa: F401  # register command modules
 from config import Config, ConfigError
 from config_store import ConfigStore
@@ -32,6 +34,7 @@ class TalkinChatBot:
         self.store = ConfigStore(config.state_dir)
         self.refresh_access()
         self.activity = ActivityStore(config.state_dir / "activity.sqlite3")
+        self.activity.cleanup()
         self.card_sessions = CardSessionManager(
             GameStore(config.state_dir / "card_games.json"))
         self.cricket = CricketManager(
@@ -39,6 +42,7 @@ class TalkinChatBot:
             CoinLedger(config.state_dir / "coins.json"),
             CricketStats(config.state_dir / "cricket_stats.json"),
         )
+        self._initialized = False
 
     async def _connect(self, url):
         import websockets
@@ -85,6 +89,7 @@ class TalkinChatBot:
                     event.user_key, event.user, "join")
 
     async def run_forever(self):
+        await self.initialize()
         delay = 1.0
         while True:
             try:
@@ -92,9 +97,15 @@ class TalkinChatBot:
                 delay = 1.0
             except asyncio.CancelledError:
                 raise
-            except (ConnectionError, OSError, TimeoutError):
+            except (ConnectionError, OSError, TimeoutError, WebSocketException):
                 await self.sleep(delay)
                 delay = min(delay * 2, 60.0)
+
+    async def initialize(self):
+        if self._initialized:
+            return
+        await self.card_sessions.restore()
+        self._initialized = True
 
     async def reply(self, context, text):
         if context.is_dm:

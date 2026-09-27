@@ -1,5 +1,8 @@
 import asyncio
 import unittest
+from unittest.mock import AsyncMock
+
+from websockets.exceptions import WebSocketException
 
 from bot import TalkinChatBot
 from config import Config
@@ -62,6 +65,28 @@ class ReconnectTests(unittest.TestCase):
         with self.assertRaises(asyncio.CancelledError):
             asyncio.run(bot.run_forever())
         self.assertEqual([1.0, 2.0, 4.0, 8.0], sleeps)
+
+    def test_protocol_errors_use_the_same_bounded_reconnect_path(self):
+        sleeps = []
+
+        async def connector(_):
+            raise WebSocketException("protocol closed")
+
+        async def sleep(delay):
+            sleeps.append(delay)
+            raise asyncio.CancelledError
+
+        bot = TalkinChatBot(self.config(), connector=connector, sleep=sleep)
+        with self.assertRaises(asyncio.CancelledError):
+            asyncio.run(bot.run_forever())
+        self.assertEqual([1.0], sleeps)
+
+    def test_initialize_restores_card_sessions_once(self):
+        bot = TalkinChatBot(self.config())
+        bot.card_sessions.restore = AsyncMock()
+        asyncio.run(bot.initialize())
+        asyncio.run(bot.initialize())
+        bot.card_sessions.restore.assert_awaited_once_with()
 
 
 if __name__ == "__main__":
