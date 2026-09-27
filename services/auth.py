@@ -7,8 +7,13 @@ LEVELS = {"user": 0, "admin": 1, "creator": 2}
 
 
 class AccessControl:
-    def __init__(self, creator, admins=(), room_authorities=None):
+    def __init__(self, creator, admins=(), room_authorities=None,
+                 creator_aliases=()):
         self.creator = normalize_identity(creator)
+        self.creators = {
+            self.creator,
+            *(normalize_identity(value) for value in creator_aliases),
+        }
         self.admins = {normalize_identity(value) for value in admins}
         self.room_authorities = {
             normalize_identity(room): {normalize_identity(user) for user in users}
@@ -17,7 +22,7 @@ class AccessControl:
 
     def level_of(self, username):
         user = normalize_identity(username)
-        if user == self.creator:
+        if user in self.creators:
             return "creator"
         if user in self.admins:
             return "admin"

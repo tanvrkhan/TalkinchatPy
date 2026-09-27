@@ -5,8 +5,9 @@ from services.auth import AccessControl
 
 class AccessControlTests(unittest.TestCase):
     def test_creator_and_admin_matching_is_casefolded(self):
-        access = AccessControl("Straße", ["Alice"])
+        access = AccessControl("Straße", ["Alice"], creator_aliases=["🆂🅷🅴🆁🆁🆈"])
         self.assertEqual("creator", access.level_of(" STRASSE "))
+        self.assertEqual("creator", access.level_of("🆂🅷🅴🆁🆁🆈"))
         self.assertEqual("admin", access.level_of("ALICE"))
         self.assertEqual("user", access.level_of("Bob"))
 

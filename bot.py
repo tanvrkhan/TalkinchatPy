@@ -182,6 +182,7 @@ class TalkinChatBot:
             self.config.owner,
             self.store.get("admins", []),
             self.store.get("room_authorities", {}),
+            self.store.get("creator_aliases", []),
         )
 
     def mark_ready(self):

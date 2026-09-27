@@ -8,6 +8,7 @@ from pathlib import Path
 DEFAULTS = {
     "prefix": ",",
     "admins": [],
+    "creator_aliases": [],
     "disabled": [],
     "rooms": [],
     "room_names": {},
@@ -51,7 +52,7 @@ class ConfigStore:
         return self._state.get(key, default)
 
     def set(self, key, value):
-        if key in {"admins", "disabled"}:
+        if key in {"admins", "creator_aliases", "disabled"}:
             value = [str(item).casefold() for item in value]
         self._state[key] = value
         self.save()
