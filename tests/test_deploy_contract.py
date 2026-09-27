@@ -32,6 +32,7 @@ class DeploymentWorkflowContractTests(unittest.TestCase):
         self.assertIn("backup", release)
         self.assertIn("rollback", release)
         self.assertIn("--check-readiness", release)
+        self.assertIn('TALKINCHAT_APP_DIR="$incoming"', release)
         self.assertNotIn("systemctl restart howdies-bot", workflow)
         self.assertNotIn("/root/HowdiesPy", workflow)
 

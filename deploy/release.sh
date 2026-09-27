@@ -25,7 +25,7 @@ rollback() {
 }
 trap rollback ERR
 
-bash "$incoming/deploy/install.sh"
+TALKINCHAT_APP_DIR="$incoming" bash "$incoming/deploy/install.sh"
 install -d -m 0755 "$releases"
 test ! -e "$release"
 mv "$incoming" "$release"

@@ -56,5 +56,15 @@ PY
 
 chmod 640 "$ENV_FILE"
 chown root:talkinchat "$ENV_FILE"
+rm -f /var/lib/talkinchat-bot/ready.json
 systemctl restart "$SERVICE"
+for _ in $(seq 1 30); do
+  [[ -s /var/lib/talkinchat-bot/ready.json ]] && break
+  sleep 1
+done
+if [[ ! -s /var/lib/talkinchat-bot/ready.json ]]; then
+  echo "TalkinChat did not confirm login. Check the username, password, and room." >&2
+  journalctl -u "$SERVICE" -n 20 --no-pager >&2 || true
+  exit 1
+fi
 systemctl --no-pager --full status "$SERVICE"
