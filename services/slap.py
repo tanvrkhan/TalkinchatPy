@@ -467,7 +467,7 @@ def pending():
 
 
 def slap(user, userid, roomid, avatar, now=None):
-    """Play one immediate slap round against the bot."""
+    """Raise a hand or resolve a cross-room slap fight."""
     global _pending
     now = time.time() if now is None else float(now)
 
@@ -476,41 +476,67 @@ def slap(user, userid, roomid, avatar, now=None):
         return {"action": "health", "health": current["health"],
                 "wait": seconds_until_fight_ready(user, now)}
 
+    if _pending and _pending["user"].casefold() == str(user).casefold():
+        return {"action": "already"}
+
+    if not _pending:
+        _pending = {
+            "user": user, "userid": userid, "roomid": roomid,
+            "avatar": avatar, "t": now,
+        }
+        return {"action": "raised", "room": roomid, "avatar": avatar}
+
+    opponent = _pending
+    if str(opponent["roomid"]).casefold() == str(roomid).casefold():
+        return {"action": "same_room", "user": opponent["user"]}
+
+    opponent_health = health(opponent["user"], now)
+    if opponent_health["health"] < FIGHT_MIN_HEALTH:
+        _pending = None
+        return {
+            "action": "opponent_health", "user": opponent["user"],
+            "health": opponent_health["health"],
+        }
+
     _pending = None
-    human = {"name": user, "userid": userid, "room": roomid, "avatar": avatar}
-    bot = {"name": "TalkinChat Bot", "userid": "bot", "room": roomid, "avatar": ""}
-    human_wins = random.randint(0, 1) == 0
-    winner, loser = (human, bot) if human_wins else (bot, human)
-    record = _rec(user)
-    record["userid"] = userid
-    record["username"] = user
+    challenger = {
+        "name": user, "userid": userid, "room": roomid, "avatar": avatar,
+    }
+    waiting = {
+        "name": opponent["user"], "userid": opponent["userid"],
+        "room": opponent["roomid"], "avatar": opponent["avatar"],
+    }
+    players = [challenger, waiting]
+    winner = players[random.randint(0, 1)]
+    loser = players[1] if winner is players[0] else players[0]
+
+    winner_record = _rec(winner["name"])
+    loser_record = _rec(loser["name"])
+    winner_record["userid"] = winner["userid"]
+    winner_record["username"] = winner["name"]
+    loser_record["userid"] = loser["userid"]
+    loser_record["username"] = loser["name"]
+
+    winner_record["streak"] = winner_record.get("streak", 0) + 1
+    gained = WIN_BASE * winner_record["streak"]
+    winner_record["xp"] += gained
+    winner_record["wins"] += 1
+
+    before = loser_record["xp"]
+    loser_record["xp"] = max(0, loser_record["xp"] - LOSS_BASE)
+    lost = before - loser_record["xp"]
+    loser_record["losses"] += 1
+    loser_record["streak"] = 0
     critical = random.random() < CRITICAL_CHANCE
-    gained = lost = 0
-    damage = {"base_damage": CRITICAL_DAMAGE if critical else NORMAL_DAMAGE,
-              "damage": 0, "health": 100, "blocked": False, "armor": False}
-    if human_wins:
-        record["streak"] = record.get("streak", 0) + 1
-        gained = WIN_BASE * record["streak"]
-        record["xp"] += gained
-        record["wins"] += 1
-        damage["damage"] = damage["base_damage"]
-        damage["health"] = max(0, 100 - damage["damage"])
-    else:
-        before = record["xp"]
-        record["xp"] = max(0, record["xp"] - LOSS_BASE)
-        lost = before - record["xp"]
-        record["losses"] += 1
-        record["streak"] = 0
-        damage = apply_slap_damage(user, critical, now)
+    damage = apply_slap_damage(loser["name"], critical, now)
+    winner_health = health(winner["name"], now)["health"]
     _save()
     return {
         "action": "fight",
-        "winner": {**winner, "xp": record["xp"] if human_wins else 0,
-                   "streak": record["streak"] if human_wins else 0,
-                   "health": health(user, now)["health"] if human_wins else 100},
-        "loser": {**loser, "xp": record["xp"] if not human_wins else 0,
-                  "health": damage["health"]},
-        "gained": gained, "lost": lost, "streak": record["streak"],
+        "winner": {**winner, "xp": winner_record["xp"],
+                   "streak": winner_record["streak"], "health": winner_health},
+        "loser": {**loser, "xp": loser_record["xp"], "health": damage["health"]},
+        "gained": gained, "lost": lost, "streak": winner_record["streak"],
         "critical": critical, **damage,
     }
 

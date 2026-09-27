@@ -53,20 +53,31 @@ class SlapHealthTests(unittest.TestCase):
         self.assertEqual(result["health"], 0)
         self.assertEqual(result["wait"], 50)
 
-    def test_slap_immediately_plays_against_bot_without_pending_human(self):
+    def test_slap_pairs_players_from_different_rooms(self):
         self.seed("Alice", xp=10_000, health=100, health_updated_at=2_000)
+        self.seed("Bob", xp=10_000, health=100, health_updated_at=2_000)
+        raised = slap.slap("Alice", "1", "Room A", "", now=2_000)
+        self.assertEqual("raised", raised["action"])
+        self.assertEqual("already", slap.slap(
+            "Alice", "1", "Room B", "", now=2_000)["action"])
+        self.assertEqual("same_room", slap.slap(
+            "Bob", "2", "Room A", "", now=2_000)["action"])
+        self.assertEqual("Alice", slap.pending()["user"])
+
         with mock.patch.object(slap.random, "randint", return_value=0), \
                 mock.patch.object(slap.random, "random", return_value=0.05):
-            result = slap.slap("Alice", 1, 7, "", now=2_000)
+            result = slap.slap("Bob", "2", "Room B", "", now=2_000)
         self.assertEqual("fight", result["action"])
-        self.assertEqual("Alice", result["winner"]["name"])
-        self.assertEqual("TalkinChat Bot", result["loser"]["name"])
+        self.assertEqual("Bob", result["winner"]["name"])
+        self.assertEqual("Alice", result["loser"]["name"])
+        self.assertEqual("Room B", result["winner"]["room"])
+        self.assertEqual("Room A", result["loser"]["room"])
         self.assertIsNone(slap.pending())
         self.assertTrue(result["critical"])
         self.assertEqual(result["damage"], 50)
         self.assertEqual(result["loser"]["health"], 50)
         self.assertEqual(result["gained"], slap.WIN_BASE)
-        self.assertEqual(result["lost"], 0)
+        self.assertEqual(result["lost"], slap.LOSS_BASE)
 
     def test_add_xp_once_persists_xp_and_award_key_atomically(self):
         first = slap.add_xp_once("Alice", "1", 5_000, "card:one:reward:alice")
