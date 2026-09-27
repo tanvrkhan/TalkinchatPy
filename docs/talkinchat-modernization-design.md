@@ -20,13 +20,20 @@ and constraints before replacing the legacy monolithic `main.py`.
 - Accept both comma and exclamation command prefixes. Comma is the primary prefix
   shown in help, examples, and documentation.
 
-## Verified Legacy Protocol
+## Verified Protocol
 
-Inspection of `main.py` on `master` verified these current transport values and
-payload shapes:
+Inspection of Android app version 5.8.3 supersedes the legacy `main.py`
+assumptions for the production transport:
 
-- Websocket endpoint: `wss://chatp.net:5333/server`.
-- Upload endpoint: `https://cdn.talkinchat.com/post.php`.
+- Authentication endpoint: protobuf POST to `https://chatp.net/api?auth_new`.
+- Websocket endpoint: `wss://chatp.net:<server>/server`, where authentication
+  returns the numeric server port.
+- Upload endpoint: `https://talkinchat.com/upload`.
+- Current outbound commands and incoming events are protobuf binary frames.
+- Legacy JSON event decoding remains as a compatibility path.
+
+The retired legacy client used these JSON payload shapes, which are retained
+only as historical compatibility evidence:
 - Login payload: `{"handler":"login","id":..., "username":..., "password":...}`.
 - Initial room join payload: `{"handler":"room_join","id":..., "name": room}`.
 - Room leave payload: `{"handler":"room_leave","id":..., "name": room}`.
@@ -147,4 +154,3 @@ until the legacy `main.py` can be retired.
   with fallbacks instead of guessed schemas.
 - Testability: business rules move into pure services, while transport payloads
   and reconnect behavior receive dedicated tests.
-

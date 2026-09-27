@@ -24,13 +24,17 @@ from services.cricket_manager import CricketManager
 from services.cricket_stats import CricketStats
 from services.cricket_store import CricketStore
 from services.game_store import GameStore
-from transports.talkinchat import EventDecoder, EventKind, TalkinChatTransport
+from transports.talkinchat import (
+    EventDecoder, EventKind, TalkinChatTransport, authenticate, websocket_headers,
+)
 
 
 class TalkinChatBot:
-    def __init__(self, config, *, connector=None, sleep=asyncio.sleep, registry=REGISTRY):
+    def __init__(self, config, *, connector=None, authenticator=authenticate,
+                 sleep=asyncio.sleep, registry=REGISTRY):
         self.config = config
         self.connector = connector or self._connect
+        self.authenticator = authenticator
         self.sleep = sleep
         self.registry = registry
         self.decoder = EventDecoder()
@@ -48,17 +52,43 @@ class TalkinChatBot:
         )
         self._initialized = False
 
-    async def _connect(self, url):
+    async def _connect(self, url, headers=None):
         import websockets
         return await websockets.connect(
             url,
             open_timeout=self.config.connect_timeout,
             close_timeout=5,
             max_size=2 * 1024 * 1024,
+            extra_headers=headers,
         )
 
+    def _device_id(self):
+        path = self.config.state_dir / "device_id"
+        if path.is_file():
+            return path.read_text(encoding="ascii").strip()
+        self.config.state_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
+        value = secrets.token_hex(16)
+        path.write_text(value + "\n", encoding="ascii")
+        os.chmod(path, 0o600)
+        return value
+
     async def run_connection(self):
-        socket = self.connector(self.config.websocket_url)
+        url = self.config.websocket_url
+        headers = None
+        if not url:
+            device_id = self._device_id()
+            auth = await asyncio.to_thread(
+                self.authenticator, self.config.auth_url, self.config.username,
+                self.config.password, device_id=device_id,
+                timeout=self.config.connect_timeout,
+            )
+            url = f"wss://chatp.net:{auth.server}/server"
+            headers = websocket_headers(
+                self.config.username, self.config.password, auth, device_id=device_id)
+        try:
+            socket = self.connector(url, headers)
+        except TypeError:
+            socket = self.connector(url)
         if inspect.isawaitable(socket):
             socket = await socket
         self.transport = TalkinChatTransport(
@@ -69,6 +99,10 @@ class TalkinChatBot:
             max_upload_bytes=self.config.max_upload_bytes,
         )
         await self.transport.login()
+        if headers is not None:
+            for room in self.config.rooms:
+                await self.transport.join_room(room)
+            self.mark_ready()
         async for frame in socket:
             event = self.decoder.decode(frame)
             if event.kind == EventKind.LOGIN_SUCCESS:

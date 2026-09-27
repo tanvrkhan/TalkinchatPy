@@ -1,8 +1,10 @@
 """Verified TalkinChat websocket and upload protocol boundary."""
 
 import asyncio
+import base64
 import json
 import secrets
+import uuid
 from collections import deque
 from dataclasses import dataclass
 from enum import Enum
@@ -13,14 +15,140 @@ def normalize_identity(value):
     return str(value or "").strip().casefold()
 
 
-def login_payload(username, password, request_id):
-    return {"handler": "login", "id": request_id, "username": username, "password": password}
+def _varint(value):
+    result = bytearray()
+    while value > 127:
+        result.append((value & 127) | 128)
+        value >>= 7
+    result.append(value)
+    return bytes(result)
+
+
+def _string_field(number, value):
+    value = str(value).encode("utf-8")
+    return _varint((number << 3) | 2) + _varint(len(value)) + value
+
+
+def _integer_field(number, value):
+    return _varint(number << 3) + _varint(int(value))
+
+
+def _read_varint(payload, offset):
+    value = shift = 0
+    while offset < len(payload):
+        byte = payload[offset]
+        offset += 1
+        value |= (byte & 127) << shift
+        if byte < 128:
+            return value, offset
+        shift += 7
+        if shift > 63:
+            break
+    raise ValueError("invalid protobuf varint")
+
+
+def protobuf_fields(payload):
+    """Decode the wire types used by TalkinChat while preserving repeated fields."""
+    fields = {}
+    offset = 0
+    while offset < len(payload):
+        tag, offset = _read_varint(payload, offset)
+        number, wire_type = tag >> 3, tag & 7
+        if not number:
+            raise ValueError("invalid protobuf field")
+        if wire_type == 0:
+            value, offset = _read_varint(payload, offset)
+        elif wire_type == 2:
+            length, offset = _read_varint(payload, offset)
+            end = offset + length
+            if end > len(payload):
+                raise ValueError("truncated protobuf field")
+            value, offset = payload[offset:end], end
+        else:
+            raise ValueError(f"unsupported protobuf wire type: {wire_type}")
+        fields.setdefault(number, []).append(value)
+    return fields
+
+
+def _text(fields, number):
+    values = fields.get(number, ())
+    if not values or not isinstance(values[0], bytes):
+        return ""
+    return values[0].decode("utf-8", errors="replace")
+
+
+def build_auth_request(username, password, *, sid=None, device_id=None,
+                       device_model="444$Python-Bot$34", language="en"):
+    values = {
+        1: "login", 2: username, 3: password, 4: "", 5: "",
+        6: sid or str(uuid.uuid4()), 7: "34", 8: "android@",
+        9: "444", 10: "2", 11: device_id or str(uuid.uuid4()),
+        12: device_model, 13: language, 14: "1",
+    }
+    return b"".join(_string_field(number, value) for number, value in values.items())
+
+
+@dataclass(frozen=True)
+class AuthResult:
+    result: str
+    user_id: str
+    captcha_id: str
+    message: str
+    server: str
+    method: str
+    photo_version: str = ""
+
+
+def parse_auth_result(payload):
+    fields = protobuf_fields(payload)
+    return AuthResult(
+        _text(fields, 1), _text(fields, 2), _text(fields, 5),
+        _text(fields, 6), _text(fields, 7), _text(fields, 8), _text(fields, 4),
+    )
+
+
+def authenticate(auth_url, username, password, *, device_id, session=None, timeout=15):
+    client = session
+    if client is None:
+        import requests
+        client = requests
+    payload = build_auth_request(username, password, device_id=device_id)
+    response = client.post(
+        auth_url, data=payload, headers={"Content-Type": "application/octet-stream"},
+        timeout=timeout,
+    )
+    response.raise_for_status()
+    result = parse_auth_result(response.content)
+    if result.result != "ok":
+        raise PermissionError(result.message or "TalkinChat authentication failed")
+    if not result.server.isdigit():
+        raise ValueError("TalkinChat authentication returned an invalid server")
+    return result
+
+
+def websocket_headers(username, password, auth, *, device_id, device_model="444$Python-Bot$34"):
+    encode = lambda value: base64.b64encode(str(value).encode()).decode()
+    if auth.method == "n":
+        token = "@".join((auth.captcha_id, device_id, device_model, "android", "en",
+                          auth.photo_version, ""))
+        return {"b": encode(token)}
+    return {
+        "action": "login", "os": "android", "api_ver": "2", "client_ver": "1",
+        "username": encode(username), "password": encode(password),
+        "captcha_text": encode(""), "captcha_id": encode(auth.captcha_id),
+        "captcha_url": encode(""), "m": encode(device_model), "i": encode(device_id),
+        "ver": encode("444"), "sdk": encode("34"),
+    }
 
 
 def room_payload(handler, room, request_id):
     if handler not in {"room_join", "room_leave"}:
         raise ValueError("unsupported room handler")
-    return {"handler": handler, "id": request_id, "name": room}
+    action = handler
+    payload = _string_field(1, action) + _string_field(6, room)
+    if handler == "room_join":
+        payload += _string_field(9, "") + _integer_field(13, 0)
+    return payload
 
 
 def message_payload(handler, target, kind, request_id, *, body="", url="", length=""):
@@ -28,16 +156,15 @@ def message_payload(handler, target, kind, request_id, *, body="", url="", lengt
         raise ValueError("unsupported message handler")
     if kind not in {"text", "image", "audio"}:
         raise ValueError("unsupported message type")
-    target_field = "room" if handler == "room_message" else "to"
-    return {
-        "handler": handler,
-        "id": request_id,
-        target_field: target,
-        "type": kind,
-        "url": url,
-        "body": body,
-        "length": length,
-    }
+    fields = [_string_field(1, handler), _string_field(2, kind)]
+    if length != "":
+        fields.append(_string_field(3, length))
+    fields.append(_string_field(4 if handler == "chat_message" else 6, target))
+    if body:
+        fields.append(_string_field(5, body))
+    if url:
+        fields.append(_string_field(7, url))
+    return b"".join(fields)
 
 
 class Capabilities(str, Enum):
@@ -92,9 +219,18 @@ class EventDecoder:
         self._order = deque(maxlen=duplicate_window)
 
     def decode(self, frame):
+        if isinstance(frame, bytes):
+            if frame.lstrip().startswith((b"{", b"[")):
+                try:
+                    frame = frame.decode("utf-8")
+                except UnicodeDecodeError:
+                    return Event(EventKind.MALFORMED)
+            else:
+                try:
+                    return self._decode_binary(frame)
+                except (ValueError, TypeError):
+                    return Event(EventKind.MALFORMED)
         try:
-            if isinstance(frame, bytes):
-                frame = frame.decode("utf-8")
             data = json.loads(frame)
             if not isinstance(data, dict):
                 raise ValueError("event is not an object")
@@ -134,10 +270,33 @@ class EventDecoder:
             raw_type=event_type,
         )
 
+    def _decode_binary(self, frame):
+        result = protobuf_fields(frame)
+        handler_id = result.get(1, [0])[0]
+        if handler_id == 16:
+            return Event(EventKind.LOGIN_SUCCESS)
+        if handler_id != 6 or 10 not in result:
+            return Event(EventKind.UNKNOWN)
+        room_event = protobuf_fields(result[10][0])
+        event_type = _text(room_event, 1)
+        kinds = {
+            "text": EventKind.TEXT,
+            "image": EventKind.IMAGE,
+            "user_joined": EventKind.USER_JOINED,
+            "joined": EventKind.USER_JOINED,
+        }
+        user = _text(room_event, 2) or _text(room_event, 22)
+        return Event(
+            kind=kinds.get(event_type, EventKind.UNKNOWN),
+            event_id=_text(room_event, 41), room=_text(room_event, 13),
+            user=user, user_key=normalize_identity(user), body=_text(room_event, 6),
+            url=_text(room_event, 7), raw_type=event_type,
+        )
+
 
 class TalkinChatTransport:
     def __init__(self, websocket, username, password, *, id_factory=None,
-                 upload_url="https://cdn.talkinchat.com/post.php", max_upload_bytes=15 * 1024 * 1024):
+                 upload_url="https://talkinchat.com/upload", max_upload_bytes=15 * 1024 * 1024):
         self.websocket = websocket
         self.username = username
         self._password = password
@@ -149,11 +308,11 @@ class TalkinChatTransport:
         return capability in SUPPORTED
 
     async def _send(self, payload):
-        await self.websocket.send(json.dumps(payload, separators=(",", ":")))
+        await self.websocket.send(payload)
         return OperationResult(True)
 
     async def login(self):
-        return await self._send(login_payload(self.username, self._password, self.id_factory()))
+        return OperationResult(True)
 
     async def join_room(self, room):
         return await self._send(room_payload("room_join", room, self.id_factory()))

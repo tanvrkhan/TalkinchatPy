@@ -59,9 +59,12 @@ payload fields, endpoints, or upload forms.
 
 The adapter is grounded in the existing TalkinChat protocol evidence:
 
-- Websocket: `wss://chatp.net:5333/server`.
-- Upload: `https://cdn.talkinchat.com/post.php`.
-- Login handler: `login` with `id`, `username`, and `password`.
+- Authentication: protobuf POST to `https://chatp.net/api?auth_new`.
+- Websocket: `wss://chatp.net:<server>/server`, with the numeric server port
+  returned by authentication.
+- Upload: `https://talkinchat.com/upload`.
+- Current commands and events use protobuf binary frames matching Android app
+  version 5.8.3. JSON events remain a compatibility input.
 - Room join/leave: `room_join` and `room_leave` using stable room display names.
 - Room messages: `room_message` with `text`, `image`, or `audio` type.
 - Private messages: `chat_message` to a username.

@@ -6,6 +6,7 @@ from websockets.exceptions import WebSocketException
 
 from bot import TalkinChatBot
 from config import Config
+from transports.talkinchat import protobuf_fields
 
 
 class ClosingSocket:
@@ -34,6 +35,7 @@ class ReconnectTests(unittest.TestCase):
             "TALKINCHAT_USERNAME": "bot", "TALKINCHAT_PASSWORD": "pw",
             "TALKINCHAT_ROOM": "Room One,Room Two",
             "TALKINCHAT_STATE_DIR": "/tmp/talkinchat-bot-tests",
+            "TALKINCHAT_WEBSOCKET_URL": "wss://example.invalid/server",
         })
 
     def test_login_success_joins_all_rooms_and_ignores_bad_frames(self):
@@ -44,9 +46,11 @@ class ReconnectTests(unittest.TestCase):
         bot = TalkinChatBot(self.config(), connector=lambda _: socket)
         with self.assertRaises(ConnectionError):
             asyncio.run(bot.run_connection())
-        payloads = [__import__("json").loads(item) for item in socket.sent]
-        self.assertEqual("login", payloads[0]["handler"])
-        self.assertEqual(["Room One", "Room Two"], [item["name"] for item in payloads[1:]])
+        payloads = [protobuf_fields(item) for item in socket.sent]
+        self.assertEqual(
+            ["Room One", "Room Two"],
+            [item[6][0].decode() for item in payloads],
+        )
         self.assertTrue((self.config().state_dir / "ready.json").is_file())
 
     def test_reconnect_uses_bounded_backoff(self):

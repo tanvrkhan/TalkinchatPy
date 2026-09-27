@@ -21,8 +21,9 @@ class Config:
     rooms: tuple[str, ...]
     owner: str
     state_dir: Path = Path("/var/lib/talkinchat-bot")
-    websocket_url: str = "wss://chatp.net:5333/server"
-    upload_url: str = "https://cdn.talkinchat.com/post.php"
+    websocket_url: str = ""
+    auth_url: str = "https://chatp.net/api?auth_new"
+    upload_url: str = "https://talkinchat.com/upload"
     ollama_url: str = "http://127.0.0.1:11434"
     ollama_model: str = "llama3.2:3b"
     ollama_lock: Path = Path("/run/lock/local-ollama.lock")
@@ -54,8 +55,9 @@ class Config:
             rooms=rooms,
             owner=_value(environ, "TALKINCHAT_OWNER", username),
             state_dir=Path(_value(environ, "TALKINCHAT_STATE_DIR", "/var/lib/talkinchat-bot")),
-            websocket_url=_value(environ, "TALKINCHAT_WEBSOCKET_URL", "wss://chatp.net:5333/server"),
-            upload_url=_value(environ, "TALKINCHAT_UPLOAD_URL", "https://cdn.talkinchat.com/post.php"),
+            websocket_url=_value(environ, "TALKINCHAT_WEBSOCKET_URL"),
+            auth_url=_value(environ, "TALKINCHAT_AUTH_URL", "https://chatp.net/api?auth_new"),
+            upload_url=_value(environ, "TALKINCHAT_UPLOAD_URL", "https://talkinchat.com/upload"),
             ollama_url=_value(environ, "TALKINCHAT_OLLAMA_URL", "http://127.0.0.1:11434"),
             ollama_model=_value(environ, "TALKINCHAT_AI_MODEL", "llama3.2:3b"),
             ollama_lock=Path(_value(environ, "TALKINCHAT_OLLAMA_LOCK", "/run/lock/local-ollama.lock")),

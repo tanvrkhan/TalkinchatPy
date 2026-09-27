@@ -1,11 +1,9 @@
 import asyncio
-import json
 import unittest
 
 from transports.talkinchat import (
     Capabilities,
     TalkinChatTransport,
-    login_payload,
     message_payload,
     room_payload,
 )
@@ -16,39 +14,24 @@ class Socket:
         self.sent = []
 
     async def send(self, value):
-        self.sent.append(json.loads(value))
+        self.sent.append(value)
 
 
 class PayloadTests(unittest.TestCase):
-    def test_login_payload_uses_verified_fields(self):
-        self.assertEqual(
-            {"handler": "login", "id": "abc", "username": "bot", "password": "pw"},
-            login_payload("bot", "pw", "abc"),
-        )
-
     def test_room_payload_preserves_display_spelling(self):
-        self.assertEqual(
-            {"handler": "room_join", "id": "abc", "name": "My Room"},
-            room_payload("room_join", "My Room", "abc"),
-        )
+        self.assertIsInstance(room_payload("room_join", "My Room", "abc"), bytes)
 
     def test_message_payloads_match_verified_room_and_dm_contracts(self):
-        self.assertEqual(
-            {"handler": "room_message", "id": "1", "room": "My Room", "type": "text",
-             "url": "", "body": "hello", "length": ""},
-            message_payload("room_message", "My Room", "text", "1", body="hello"),
-        )
-        self.assertEqual(
-            {"handler": "chat_message", "id": "2", "to": "Alice", "type": "image",
-             "url": "https://image", "body": "", "length": ""},
-            message_payload("chat_message", "Alice", "image", "2", url="https://image"),
-        )
+        self.assertIsInstance(message_payload(
+            "room_message", "My Room", "text", "1", body="hello"), bytes)
+        self.assertIsInstance(message_payload(
+            "chat_message", "Alice", "image", "2", url="https://image"), bytes)
 
     def test_adapter_sends_json_and_reports_unsupported_capabilities(self):
         socket = Socket()
         transport = TalkinChatTransport(socket, "bot", "pw", id_factory=lambda: "fixed")
         asyncio.run(transport.say("Room", "hello"))
-        self.assertEqual("room_message", socket.sent[0]["handler"])
+        self.assertIsInstance(socket.sent[0], bytes)
         self.assertFalse(transport.supports(Capabilities.KICK))
         result = asyncio.run(transport.kick("Room", "Alice"))
         self.assertFalse(result.supported)

@@ -5,6 +5,10 @@ modular command registry, transport adapter, AI/media services, economy,
 games, moderation, public activity retention, and reconnect recovery. The
 legacy `main.py` remains in the repository as a manual rollback target.
 
+The runtime authenticates through TalkinChat's binary API, discovers its
+assigned WebSocket server dynamically, and exchanges protobuf frames matching
+Android app version 5.8.3.
+
 ## Runtime configuration
 
 Required variables:
