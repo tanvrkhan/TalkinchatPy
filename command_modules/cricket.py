@@ -18,17 +18,34 @@ async def cricket(bot, context):
     except (ValueError, CricketManagerError) as exc:
         await bot.reply(context, str(exc))
         return
-    await bot.reply(context, f"Cricket lobby: {len(lobby['players'])}/{lobby['team_size']} players. Use ,bat to queue or ,bowl solo.")
+    await bot.reply(
+        context,
+        f"Cricket lobby: {len(lobby['players'])}/{lobby['team_size']} players. "
+        "Use ,cricketsolo to play the bot now, or ,cricketqueue to face "
+        "another room. Use ,cricketai to add an AI teammate.",
+    )
+
+
+@command("cricketsolo", aliases=("cricsolo",), category="Games", needs_room=True,
+         help="Start cricket immediately against AI")
+async def cricket_solo(bot, context):
+    await _start(bot, context, True)
+
+
+@command("cricketqueue", aliases=("cricqueue",), category="Games", needs_room=True,
+         help="Queue cricket against another room")
+async def cricket_queue(bot, context):
+    await _start(bot, context, False)
 
 
 @command("bat", aliases=("batting",), category="Games", needs_room=True,
-         help="Queue the cricket team")
+         help="Queue the cricket team (legacy shortcut)")
 async def bat(bot, context):
     await _start(bot, context, False)
 
 
 @command("bowl", aliases=("bowling",), category="Games", needs_room=True,
-         help="Start cricket against AI")
+         help="Start cricket against AI (legacy shortcut)")
 async def bowl(bot, context):
     await _start(bot, context, True)
 

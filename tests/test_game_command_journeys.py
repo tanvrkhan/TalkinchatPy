@@ -56,6 +56,10 @@ class FakeCricket:
         self.toss = (match, user, decision)
         return {"kind": "toss", "decision": decision}
 
+    async def start(self, room, solo=False):
+        self.started = (room, solo)
+        return {"kind": "paired", "match": {}}
+
     async def add_ai(self, room, user, user_key):
         self.ai = (room, user, user_key)
         return {"kind": "ai_added"}
@@ -143,6 +147,14 @@ class GameCommandJourneyTests(unittest.TestCase):
         room = DispatchContext("Alice", "Room")
         self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, room, ",cricketai")))
         self.assertEqual(("Room", "Alice", "alice"), bot.cricket.ai)
+
+    def test_cricket_has_explicit_solo_and_queue_commands(self):
+        bot = Bot()
+        room = DispatchContext("Alice", "Room")
+        self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, room, ",cricketsolo")))
+        self.assertEqual(("Room", True), bot.cricket.started)
+        self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, room, ",cricketqueue")))
+        self.assertEqual(("Room", False), bot.cricket.started)
         self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, room, ",cricketproxy bowl 3")))
         self.assertEqual(("m1", "alice", "bowl", 3, 7), bot.cricket.proxy)
         self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, room, ",cricketleave")))

@@ -49,6 +49,15 @@ class CricketManagerTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual("paired", result["kind"])
         self.assertTrue(all(player["ai"] for player in result["match"]["teams"]["b"]["players"]))
 
+    async def test_solo_start_fills_empty_teammate_slots_with_ai(self):
+        await self.manager.open_or_join("a", "Alpha", "Alice", "1", 3, 1, 0)
+        result = await self.manager.start("a", solo=True)
+        self.assertEqual("paired", result["kind"])
+        human_team = result["match"]["teams"]["a"]
+        self.assertEqual(3, len(human_team["players"]))
+        self.assertEqual(1, sum(not player["ai"] for player in human_team["players"]))
+        self.assertEqual(2, sum(player["ai"] for player in human_team["players"]))
+
     async def test_solo_human_team_always_gets_the_toss_buttons(self):
         human = {
             "room_id": "a", "room_name": "Alpha", "overs": 1, "stake": 0,

@@ -144,6 +144,24 @@ class CricketManager:
 
     async def start(self, room_id, solo=False):
         room = str(room_id)
+        if solo:
+            lobby = self.store.lobby(room)
+            if lobby is None:
+                raise CricketManagerError("No cricket lobby exists in this room.")
+            missing = lobby["team_size"] - len(lobby["players"])
+            if missing > 0:
+                existing_ai = sum(player.get("ai", False) for player in lobby["players"])
+                teammates = [
+                    self._player(f"AI {existing_ai + index + 1}", "", ai=True)
+                    for index in range(missing)
+                ]
+                self.store.update_lobby(
+                    room,
+                    lambda current: {
+                        **current,
+                        "players": [*current["players"], *teammates],
+                    },
+                )
         try:
             self.store.queue_team(room)
         except StoreError as exc:
