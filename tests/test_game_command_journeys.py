@@ -104,6 +104,10 @@ class Transport:
 
 
 class GameCommandJourneyTests(unittest.TestCase):
+    def test_bots_status_command_is_available_to_admins(self):
+        self.assertEqual("admin", REGISTRY.get("bots").level)
+        self.assertIs(REGISTRY.get("bots"), REGISTRY.get("instances"))
+
     def test_card_play_and_draw_reach_session_manager(self):
         bot = Bot()
         context = DispatchContext("Alice", "Room")

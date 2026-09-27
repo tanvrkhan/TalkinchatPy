@@ -1591,7 +1591,7 @@
         "instances"
       ],
       "category": "Bots",
-      "permission": "creator",
+      "permission": "admin",
       "capabilities": [],
       "fallback": "Text response; capability-specific actions report unsupported.",
       "status": "enabled"
