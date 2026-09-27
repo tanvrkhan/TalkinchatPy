@@ -202,6 +202,7 @@ class OperationResult:
 class EventKind(str, Enum):
     LOGIN_SUCCESS = "login_success"
     TEXT = "text"
+    DIRECT_TEXT = "direct_text"
     IMAGE = "image"
     USER_JOINED = "user_joined"
     UNKNOWN = "unknown"
@@ -264,6 +265,8 @@ class EventDecoder:
             kind = EventKind.IMAGE
         elif handler == "room_event" and event_type == "user_joined":
             kind = EventKind.USER_JOINED
+        elif handler in {"chat_event", "chat_message"} and event_type == "text":
+            kind = EventKind.DIRECT_TEXT
         else:
             kind = EventKind.UNKNOWN
         user = str(data.get("from") or data.get("username") or "")
@@ -283,6 +286,17 @@ class EventDecoder:
         handler_id = result.get(1, [0])[0]
         if handler_id == 16:
             return Event(EventKind.LOGIN_SUCCESS)
+        if handler_id == 12 and 9 in result:
+            message = protobuf_fields(result[9][0])
+            event_type = _text(message, 1)
+            user = _text(message, 3)
+            return Event(
+                kind=(EventKind.DIRECT_TEXT if event_type == "text"
+                      else EventKind.UNKNOWN),
+                event_id=_text(message, 2), user=user,
+                user_key=normalize_identity(user), body=_text(message, 5),
+                url=_text(message, 6), raw_type=event_type,
+            )
         if handler_id != 6 or 10 not in result:
             return Event(EventKind.UNKNOWN)
         room_event = protobuf_fields(result[10][0])

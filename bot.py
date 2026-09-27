@@ -112,10 +112,13 @@ class TalkinChatBot:
                     if membership_task is None:
                         membership_task = asyncio.create_task(
                             self.maintain_room_membership())
-                elif event.kind == EventKind.TEXT and event.user_key != self.config.username.casefold():
-                    self.activity.record_message(
-                        event.event_id or f"message:{hash(frame)}", event.room, event.room,
-                        event.user_key, event.user, event.body)
+                elif (event.kind in {EventKind.TEXT, EventKind.DIRECT_TEXT}
+                      and event.user_key != self.config.username.casefold()):
+                    if event.kind == EventKind.TEXT:
+                        self.activity.record_message(
+                            event.event_id or f"message:{hash(frame)}",
+                            event.room, event.room, event.user_key, event.user,
+                            event.body)
                     if self.config.collector_mode:
                         continue
                     context = DispatchContext(

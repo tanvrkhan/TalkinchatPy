@@ -24,6 +24,15 @@ class EventTests(unittest.TestCase):
         self.assertEqual(EventKind.IMAGE, image.kind)
         self.assertEqual(EventKind.USER_JOINED, joined.kind)
 
+    def test_json_private_text_is_normalized_without_a_room(self):
+        event = EventDecoder().decode(json.dumps({
+            "handler": "chat_message", "id": "dm-1", "type": "text",
+            "from": "Alice", "to": "Bot", "body": ",help",
+        }))
+        self.assertEqual(EventKind.DIRECT_TEXT, event.kind)
+        self.assertEqual("", event.room)
+        self.assertEqual("Alice", event.user)
+
     def test_malformed_unknown_and_duplicate_events_are_safe(self):
         decoder = EventDecoder()
         self.assertEqual(EventKind.MALFORMED, decoder.decode("not json").kind)

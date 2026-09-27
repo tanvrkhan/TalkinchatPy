@@ -92,6 +92,22 @@ class CurrentProtocolTests(unittest.TestCase):
 
         self.assertEqual(EventKind.LOGIN_SUCCESS, EventDecoder().decode(bytes([8, 16])).kind)
 
+    def test_binary_result_message_decodes_incoming_dm_only(self):
+        message = (
+            field(1, "text") + field(2, "dm-1") + field(3, "Alice")
+            + field(4, "Bot") + field(5, ",help")
+        )
+        incoming = bytes([8, 12]) + field(9, message)
+        event = EventDecoder().decode(incoming)
+        self.assertEqual(EventKind.DIRECT_TEXT, event.kind)
+        self.assertEqual("", event.room)
+        self.assertEqual("Alice", event.user)
+        self.assertEqual(",help", event.body)
+        self.assertEqual("dm-1", event.event_id)
+
+        sent_echo = bytes([8, 13]) + field(9, message)
+        self.assertEqual(EventKind.UNKNOWN, EventDecoder().decode(sent_echo).kind)
+
     def test_token_authentication_uses_the_verified_b_header(self):
         auth = AuthResult("ok", "91", "captcha", "", "5443", "n", "photo")
         headers = websocket_headers("Bot", "pw", auth, device_id="device", device_model="model")

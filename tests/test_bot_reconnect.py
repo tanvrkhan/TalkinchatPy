@@ -1,6 +1,7 @@
 import asyncio
 import unittest
-from unittest.mock import AsyncMock
+from types import SimpleNamespace
+from unittest.mock import AsyncMock, Mock
 
 from websockets.exceptions import WebSocketException
 
@@ -52,6 +53,25 @@ class ReconnectTests(unittest.TestCase):
             [item[6][0].decode() for item in payloads],
         )
         self.assertTrue((self.config().state_dir / "ready.json").is_file())
+
+    def test_incoming_dm_dispatches_with_private_context(self):
+        socket = ClosingSocket([
+            '{"handler":"login_event","type":"success"}',
+            '{"handler":"chat_message","type":"text","from":"Alice",'
+            '"to":"bot","body":",help"}',
+        ])
+        registry = Mock()
+        registry.parse.return_value = ("help", "")
+        registry.get.return_value = SimpleNamespace(
+            name="help", level="user", room_admin=False)
+        registry.dispatch = AsyncMock(return_value=True)
+        bot = TalkinChatBot(
+            self.config(), connector=lambda _: socket, registry=registry)
+        with self.assertRaises(ConnectionError):
+            asyncio.run(bot.run_connection())
+        context = registry.dispatch.await_args.args[1]
+        self.assertTrue(context.is_dm)
+        self.assertEqual("Alice", context.user)
 
     def test_reconnect_uses_bounded_backoff(self):
         attempts = []
