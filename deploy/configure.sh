@@ -54,6 +54,7 @@ for key, value in updates.items():
 path.write_text("\n".join(result) + "\n", encoding="utf-8")
 PY
 
-chmod 600 "$ENV_FILE"
+chmod 640 "$ENV_FILE"
+chown root:talkinchat "$ENV_FILE"
 systemctl restart "$SERVICE"
 systemctl --no-pager --full status "$SERVICE"

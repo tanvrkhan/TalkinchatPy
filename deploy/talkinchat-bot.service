@@ -5,11 +5,14 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-WorkingDirectory=/root/TalkinchatPy
+User=talkinchat
+Group=talkinchat
+UMask=0077
+WorkingDirectory=/opt/talkinchat/current
 EnvironmentFile=/etc/talkinchat-bot.env
 Environment=PYTHONUNBUFFERED=1
 Environment=TALKINCHAT_STATE_DIR=/var/lib/talkinchat-bot
-ExecStart=/root/TalkinchatPy/.venv/bin/python -u /root/TalkinchatPy/bot.py
+ExecStart=/opt/talkinchat/current/.venv/bin/python -u /opt/talkinchat/current/bot.py
 Restart=on-failure
 RestartSec=10
 TimeoutStopSec=30
@@ -20,7 +23,15 @@ NoNewPrivileges=true
 PrivateTmp=true
 ProtectHome=read-only
 ProtectSystem=strict
-ReadWritePaths=/var/lib/talkinchat-bot /root/TalkinchatPy /run/lock
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+CapabilityBoundingSet=
+ReadWritePaths=/var/lib/talkinchat-bot /run/lock/local-ollama.lock
 
 [Install]
 WantedBy=multi-user.target

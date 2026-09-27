@@ -40,11 +40,14 @@ if stat -c '%a' "$env_file" >/dev/null 2>&1; then
 else
     env_mode="$(stat -f '%Lp' "$env_file")"
 fi
-test "$env_mode" = "600"
+test "$env_mode" = "640"
 test -d "$tmp_root/var/lib/talkinchat-bot"
 test -f "$unit_file"
-grep -q '^WorkingDirectory=/root/TalkinchatPy$' "$unit_file"
+grep -q '^WorkingDirectory=/opt/talkinchat/current$' "$unit_file"
 grep -q '^EnvironmentFile=/etc/talkinchat-bot.env$' "$unit_file"
+grep -q '^User=talkinchat$' "$unit_file"
+grep -q '^Group=talkinchat$' "$unit_file"
+grep -q '^UMask=0077$' "$unit_file"
 grep -q '^daemon-reload$' "$systemctl_log"
 grep -q '^enable talkinchat-bot.service$' "$systemctl_log"
 grep -q '^stop talkinchat-bot.service$' "$systemctl_log"

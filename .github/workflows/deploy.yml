@@ -42,6 +42,10 @@ jobs:
 
       - name: Deploy TalkinChat files
         run: |
+          release_id="${GITHUB_SHA}"
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes \
+            "${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}" \
+            "mkdir -p /opt/talkinchat/incoming/${release_id}"
           rsync -az --delete \
             -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes" \
             --exclude='.git' \
@@ -52,18 +56,19 @@ jobs:
             --exclude='*.env' \
             --exclude='.venv' \
             --exclude='state' \
-            ./ "${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:/root/TalkinchatPy/"
+            ./ "${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:/opt/talkinchat/incoming/${release_id}/"
 
       - name: Install and verify TalkinChat service
         run: |
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes \
             "${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}" '
               set -eu
-              cd /root/TalkinchatPy
-              bash deploy/install.sh
+              cd /opt/talkinchat/incoming/${{ github.sha }}
+              bash deploy/release.sh "${{ github.sha }}" "/opt/talkinchat/incoming/${{ github.sha }}"
               test -f /etc/talkinchat-bot.env
-              test "$(stat -c %a /etc/talkinchat-bot.env)" = "600"
+              test "$(stat -c %a /etc/talkinchat-bot.env)" = "640"
               test -d /var/lib/talkinchat-bot
+              test -L /opt/talkinchat/current
               systemctl is-enabled talkinchat-bot.service
               if systemctl is-active --quiet talkinchat-bot.service; then
                 echo "TalkinChat service is active."

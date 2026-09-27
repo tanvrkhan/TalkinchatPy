@@ -3,9 +3,11 @@
 import argparse
 import asyncio
 import inspect
+import json
 import os
 import secrets
 import tempfile
+import time
 from pathlib import Path
 
 from websockets.exceptions import WebSocketException
@@ -72,6 +74,7 @@ class TalkinChatBot:
             if event.kind == EventKind.LOGIN_SUCCESS:
                 for room in self.config.rooms:
                     await self.transport.join_room(room)
+                self.mark_ready()
             elif event.kind == EventKind.TEXT and event.user_key != self.config.username.casefold():
                 self.activity.record_message(
                     event.event_id or f"message:{hash(frame)}", event.room, event.room,
@@ -121,6 +124,16 @@ class TalkinChatBot:
             self.store.get("admins", []),
             self.store.get("room_authorities", {}),
         )
+
+    def mark_ready(self):
+        self.config.state_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
+        temporary = self.config.state_dir / ".ready.json.tmp"
+        temporary.write_text(
+            json.dumps({"ready": True, "rooms": len(self.config.rooms), "at": time.time()}) + "\n",
+            encoding="utf-8",
+        )
+        os.chmod(temporary, 0o600)
+        os.replace(temporary, self.config.state_dir / "ready.json")
 
     async def dispatch(self, context, text):
         parsed = self.registry.parse(text)

@@ -47,6 +47,7 @@ class ReconnectTests(unittest.TestCase):
         payloads = [__import__("json").loads(item) for item in socket.sent]
         self.assertEqual("login", payloads[0]["handler"])
         self.assertEqual(["Room One", "Room Two"], [item["name"] for item in payloads[1:]])
+        self.assertTrue((self.config().state_dir / "ready.json").is_file())
 
     def test_reconnect_uses_bounded_backoff(self):
         attempts = []

@@ -18,7 +18,9 @@ Required variables:
 ## VM service
 
 The GitHub Actions deployment installs an isolated service named
-`talkinchat-bot.service` in `/root/TalkinchatPy`. Its credentials live only in
+`talkinchat-bot.service` under `/opt/talkinchat/current`. Immutable releases
+live under `/opt/talkinchat/releases`; the prior accepted release is retained
+at `/opt/talkinchat/previous` for automatic rollback. Credentials live only in
 `/etc/talkinchat-bot.env`, state belongs under `/var/lib/talkinchat-bot`, and
 logs are available from journald:
 
@@ -32,13 +34,12 @@ until all required values are present. After editing the file with mode `0600`,
 start it with:
 
 ```bash
-chmod 600 /etc/talkinchat-bot.env
-systemctl restart talkinchat-bot
-systemctl is-active talkinchat-bot
+/opt/talkinchat/current/deploy/configure.sh
 ```
 
-Rollback is independent from Howdiesbot: deploy an earlier TalkinchatPy commit
-to `/root/TalkinchatPy` and restart only `talkinchat-bot.service`.
+Rollback is independent from Howdiesbot: activation restores the
+`/opt/talkinchat/previous` release automatically if readiness or login fails.
+The service runs as the dedicated unprivileged `talkinchat` account.
 
 The service runs `bot.py`. Commands accept both `,` and `!`; help displays the
 comma prefix. TalkinChat and Howdiesbot share only the local Ollama endpoint and
