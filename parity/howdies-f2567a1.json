@@ -1,0 +1,1609 @@
+{
+  "source_repository": "tanvrkhan/howdiesbot",
+  "source_commit": "f2567a1",
+  "primary_prefix": ",",
+  "accepted_prefixes": [
+    ",",
+    "!"
+  ],
+  "commands": [
+    {
+      "name": "help",
+      "aliases": [
+        "commands",
+        "cmds"
+      ],
+      "category": "Meta",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "syntax",
+      "aliases": [
+        "usage"
+      ],
+      "category": "Meta",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "ping",
+      "aliases": [],
+      "category": "Meta",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "uptime",
+      "aliases": [],
+      "category": "Meta",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "play",
+      "aliases": [
+        "aud",
+        "get"
+      ],
+      "category": "Music",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "jio",
+      "aliases": [],
+      "category": "Music",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "say",
+      "aliases": [],
+      "category": "Music",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "img",
+      "aliases": [
+        "image",
+        "wlp"
+      ],
+      "category": "Images",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "gif",
+      "aliases": [],
+      "category": "Images",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "draw",
+      "aliases": [],
+      "category": "Images",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "draw2",
+      "aliases": [],
+      "category": "Images",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "imagine",
+      "aliases": [],
+      "category": "Images",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "cfdiag",
+      "aliases": [],
+      "category": "Images",
+      "permission": "creator",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "buttonprobe",
+      "aliases": [],
+      "category": "Config",
+      "permission": "creator",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "buttontest",
+      "aliases": [],
+      "category": "Config",
+      "permission": "creator",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "buttonwatch",
+      "aliases": [],
+      "category": "Config",
+      "permission": "creator",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "recordgame",
+      "aliases": [],
+      "category": "Config",
+      "permission": "creator",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "accessprobe",
+      "aliases": [],
+      "category": "Config",
+      "permission": "creator",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "profileprobe",
+      "aliases": [],
+      "category": "Config",
+      "permission": "creator",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "audienceprobe",
+      "aliases": [],
+      "category": "Config",
+      "permission": "creator",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "ud",
+      "aliases": [
+        "urban"
+      ],
+      "category": "Fun",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "horo",
+      "aliases": [
+        "horoscope"
+      ],
+      "category": "Fun",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "joke",
+      "aliases": [
+        "j"
+      ],
+      "category": "Fun",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "quote",
+      "aliases": [],
+      "category": "Fun",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "weather",
+      "aliases": [],
+      "category": "Fun",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "wiki",
+      "aliases": [
+        "wp"
+      ],
+      "category": "Fun",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "tr",
+      "aliases": [],
+      "category": "Fun",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "translate",
+      "aliases": [],
+      "category": "Fun",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "calc",
+      "aliases": [
+        "math"
+      ],
+      "category": "Fun",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "roll",
+      "aliases": [
+        "dice"
+      ],
+      "category": "Fun",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "flip",
+      "aliases": [
+        "coin"
+      ],
+      "category": "Fun",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "8ball",
+      "aliases": [],
+      "category": "Fun",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "askai",
+      "aliases": [
+        "ai",
+        "ask"
+      ],
+      "category": "Fun",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "who",
+      "aliases": [
+        "users",
+        "members",
+        "inroom",
+        "u",
+        "l"
+      ],
+      "category": "Room",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "whereis",
+      "aliases": [
+        "finduser",
+        "seen",
+        "is"
+      ],
+      "category": "Room",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "room",
+      "aliases": [],
+      "category": "Room",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "join",
+      "aliases": [],
+      "category": "Admin",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "leave",
+      "aliases": [
+        "quit"
+      ],
+      "category": "Admin",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "rj",
+      "aliases": [],
+      "category": "Admin",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "rooms",
+      "aliases": [],
+      "category": "Admin",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "roomsearch",
+      "aliases": [
+        "rs"
+      ],
+      "category": "Room",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "kick",
+      "aliases": [
+        "k"
+      ],
+      "category": "Admin",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "config",
+      "aliases": [
+        "settings",
+        "bi"
+      ],
+      "category": "Config",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "prefix",
+      "aliases": [],
+      "category": "Config",
+      "permission": "creator",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "admin",
+      "aliases": [],
+      "category": "Config",
+      "permission": "creator",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "enable",
+      "aliases": [],
+      "category": "Config",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "disable",
+      "aliases": [],
+      "category": "Config",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "wc",
+      "aliases": [
+        "welcome"
+      ],
+      "category": "Config",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "setwelcome",
+      "aliases": [
+        "addwelcome"
+      ],
+      "category": "Config",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "delwelcome",
+      "aliases": [
+        "rmwelcome"
+      ],
+      "category": "Config",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "welcomes",
+      "aliases": [],
+      "category": "Config",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "autoreply",
+      "aliases": [],
+      "category": "Config",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "slap",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "bomb",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "cut",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "tb",
+      "aliases": [
+        "throwback"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "shield",
+      "aliases": [
+        "buyshield"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "market",
+      "aliases": [
+        "store"
+      ],
+      "category": "Economy",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "buy",
+      "aliases": [],
+      "category": "Economy",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "spin",
+      "aliases": [
+        "s"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "xp",
+      "aliases": [
+        "score",
+        "myxp",
+        "bal",
+        "xm"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "slaptop",
+      "aliases": [
+        "xptop",
+        "leaderboard",
+        "top"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "quiz",
+      "aliases": [
+        "q"
+      ],
+      "category": "Games",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "trivia",
+      "aliases": [],
+      "category": "Games",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "scramble",
+      "aliases": [
+        "unscramble"
+      ],
+      "category": "Games",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "mathquiz",
+      "aliases": [
+        "mq"
+      ],
+      "category": "Games",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "emoji",
+      "aliases": [
+        "emojiguess"
+      ],
+      "category": "Games",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "ff",
+      "aliases": [
+        "fastfinger"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "stopgame",
+      "aliases": [
+        "gameoff",
+        "endgame"
+      ],
+      "category": "Games",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "end",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "cricket",
+      "aliases": [
+        "cric"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "bat",
+      "aliases": [
+        "batting"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "bowl",
+      "aliases": [
+        "bowling"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "b",
+      "aliases": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "cricketscore",
+      "aliases": [
+        "cs"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "cricketmatches",
+      "aliases": [
+        "cricmatches"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "cricketstats",
+      "aliases": [
+        "cricstats"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "cricketbet",
+      "aliases": [],
+      "category": "Economy",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "numbergame",
+      "aliases": [
+        "ng",
+        "guessnum"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "chain",
+      "aliases": [
+        "wordchain"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "wyr",
+      "aliases": [
+        "wouldyourather"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "thulla",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "rang",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "uno",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "hand",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "trump",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "color",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "challenge",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "catchuno",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "resume",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "bingo",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "card",
+      "aliases": [
+        "bingocard"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "call",
+      "aliases": [
+        "bingodraw"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "start",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "rps",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "duel",
+      "aliases": [
+        "diceduel"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "roulette",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "shoot",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "vampire",
+      "aliases": [
+        "imposter",
+        "findvampire"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "clue",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "vote",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "guess",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "story",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "censor",
+      "aliases": [],
+      "category": "Censor",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "exempt",
+      "aliases": [
+        "censorexempt"
+      ],
+      "category": "Censor",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "censorkick",
+      "aliases": [],
+      "category": "Censor",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "rank",
+      "aliases": [
+        "level"
+      ],
+      "category": "Economy",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "ranks",
+      "aliases": [],
+      "category": "Economy",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "daily",
+      "aliases": [],
+      "category": "Economy",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "give",
+      "aliases": [
+        "pay"
+      ],
+      "category": "Economy",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "profile",
+      "aliases": [
+        "stats",
+        "me",
+        "p",
+        "pro",
+        "dt"
+      ],
+      "category": "Economy",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "liked",
+      "aliases": [],
+      "category": "Social",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "bet",
+      "aliases": [],
+      "category": "Economy",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "blackjack",
+      "aliases": [
+        "bj"
+      ],
+      "category": "Economy",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "hit",
+      "aliases": [],
+      "category": "Economy",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "stand",
+      "aliases": [],
+      "category": "Economy",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "lottery",
+      "aliases": [
+        "raffle",
+        "ld"
+      ],
+      "category": "Economy",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "hangman",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "hg",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "ttt",
+      "aliases": [
+        "tictactoe"
+      ],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "place",
+      "aliases": [],
+      "category": "Games",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "count",
+      "aliases": [],
+      "category": "Games",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "rep",
+      "aliases": [],
+      "category": "Social",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "reptop",
+      "aliases": [],
+      "category": "Social",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "ship",
+      "aliases": [],
+      "category": "Social",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "marry",
+      "aliases": [],
+      "category": "Social",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "divorce",
+      "aliases": [],
+      "category": "Social",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "couples",
+      "aliases": [],
+      "category": "Social",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "afk",
+      "aliases": [],
+      "category": "Social",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "remindme",
+      "aliases": [
+        "remind"
+      ],
+      "category": "Social",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "poll",
+      "aliases": [],
+      "category": "Social",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "confess",
+      "aliases": [],
+      "category": "Social",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "warn",
+      "aliases": [],
+      "category": "Moderation",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "warns",
+      "aliases": [],
+      "category": "Moderation",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "unwarn",
+      "aliases": [
+        "clearwarns"
+      ],
+      "category": "Moderation",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "automod",
+      "aliases": [],
+      "category": "Moderation",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "mute",
+      "aliases": [],
+      "category": "Moderation",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "unmute",
+      "aliases": [],
+      "category": "Moderation",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "define",
+      "aliases": [
+        "dict"
+      ],
+      "category": "Fun",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "font",
+      "aliases": [
+        "fancy"
+      ],
+      "category": "Fun",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "roast",
+      "aliases": [],
+      "category": "Fun",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "compliment",
+      "aliases": [
+        "praise"
+      ],
+      "category": "Fun",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "setrole",
+      "aliases": [
+        "role"
+      ],
+      "category": "Moderation",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "promote",
+      "aliases": [
+        "a"
+      ],
+      "category": "Moderation",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "makeowner",
+      "aliases": [
+        "o",
+        "owner"
+      ],
+      "category": "Moderation",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "demote",
+      "aliases": [
+        "m",
+        "d"
+      ],
+      "category": "Moderation",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "recent",
+      "aliases": [
+        "r"
+      ],
+      "category": "Room",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "next",
+      "aliases": [],
+      "category": "Room",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "invite",
+      "aliases": [
+        "i"
+      ],
+      "category": "Room",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "roomreport",
+      "aliases": [],
+      "category": "Admin",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "adminlog",
+      "aliases": [],
+      "category": "Admin",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "lastactive",
+      "aliases": [],
+      "category": "Admin",
+      "permission": "admin",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "history",
+      "aliases": [],
+      "category": "Config",
+      "permission": "creator",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "logdm",
+      "aliases": [],
+      "category": "Config",
+      "permission": "creator",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "connect",
+      "aliases": [
+        "addbot"
+      ],
+      "category": "Bots",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "disconnect",
+      "aliases": [
+        "removebot"
+      ],
+      "category": "Bots",
+      "permission": "user",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "setstatus",
+      "aliases": [],
+      "category": "Bots",
+      "permission": "creator",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "bots",
+      "aliases": [
+        "instances"
+      ],
+      "category": "Bots",
+      "permission": "creator",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    },
+    {
+      "name": "botcmd",
+      "aliases": [],
+      "category": "Bots",
+      "permission": "creator",
+      "capabilities": [],
+      "fallback": "Text response; capability-specific actions report unsupported.",
+      "status": "planned"
+    }
+  ]
+}
