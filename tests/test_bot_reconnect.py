@@ -86,6 +86,35 @@ class ReconnectTests(unittest.TestCase):
             asyncio.run(bot.run_forever())
         self.assertEqual([1.0], sleeps)
 
+    def test_membership_watchdog_renews_every_configured_room(self):
+        sleeps = []
+
+        async def sleep(delay):
+            sleeps.append(delay)
+            if len(sleeps) > 1:
+                raise asyncio.CancelledError
+
+        bot = TalkinChatBot(self.config(), sleep=sleep)
+        bot.transport = AsyncMock()
+        with self.assertRaises(asyncio.CancelledError):
+            asyncio.run(bot.maintain_room_membership())
+        self.assertEqual([60.0, 60.0], sleeps)
+        self.assertEqual(
+            [unittest.mock.call("Room One"), unittest.mock.call("Room Two")],
+            bot.transport.join_room.await_args_list,
+        )
+
+    def test_membership_watchdog_closes_socket_when_renewal_fails(self):
+        async def sleep(_delay):
+            return None
+
+        bot = TalkinChatBot(self.config(), sleep=sleep)
+        bot.transport = AsyncMock()
+        bot.transport.join_room = AsyncMock(side_effect=ConnectionError("closed"))
+        with self.assertRaises(ConnectionError):
+            asyncio.run(bot.maintain_room_membership())
+        bot.transport.websocket.close.assert_awaited_once_with()
+
     def test_initialize_restores_card_sessions_once(self):
         bot = TalkinChatBot(self.config())
         bot.card_sessions.restore = AsyncMock()

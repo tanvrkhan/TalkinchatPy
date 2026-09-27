@@ -2,6 +2,7 @@
 
 import argparse
 import asyncio
+import contextlib
 import inspect
 import json
 import os
@@ -99,34 +100,55 @@ class TalkinChatBot:
             max_upload_bytes=self.config.max_upload_bytes,
         )
         await self.transport.login()
-        if headers is not None:
-            for room in self.config.rooms:
-                await self.transport.join_room(room)
-            self.mark_ready()
-        async for frame in socket:
-            event = self.decoder.decode(frame)
-            if event.kind == EventKind.LOGIN_SUCCESS:
-                for room in self.config.rooms:
-                    await self.transport.join_room(room)
-                self.mark_ready()
-            elif event.kind == EventKind.TEXT and event.user_key != self.config.username.casefold():
-                self.activity.record_message(
-                    event.event_id or f"message:{hash(frame)}", event.room, event.room,
-                    event.user_key, event.user, event.body)
-                if self.config.collector_mode:
-                    continue
-                context = DispatchContext(
-                    event.user,
-                    event.room,
-                    self.access.level_of(event.user),
-                    tuple(self.store.get("disabled", [])),
-                )
-                await self.dispatch(context, event.body)
-            elif event.kind == EventKind.USER_JOINED:
-                self.activity.record_presence(
-                    event.event_id or f"join:{hash(frame)}", event.room, event.room,
-                    event.user_key, event.user, "join")
-                await self.handle_join(event)
+        membership_task = None
+        try:
+            if headers is not None:
+                await self.join_configured_rooms()
+                membership_task = asyncio.create_task(self.maintain_room_membership())
+            async for frame in socket:
+                event = self.decoder.decode(frame)
+                if event.kind == EventKind.LOGIN_SUCCESS:
+                    await self.join_configured_rooms()
+                    if membership_task is None:
+                        membership_task = asyncio.create_task(
+                            self.maintain_room_membership())
+                elif event.kind == EventKind.TEXT and event.user_key != self.config.username.casefold():
+                    self.activity.record_message(
+                        event.event_id or f"message:{hash(frame)}", event.room, event.room,
+                        event.user_key, event.user, event.body)
+                    if self.config.collector_mode:
+                        continue
+                    context = DispatchContext(
+                        event.user,
+                        event.room,
+                        self.access.level_of(event.user),
+                        tuple(self.store.get("disabled", [])),
+                    )
+                    await self.dispatch(context, event.body)
+                elif event.kind == EventKind.USER_JOINED:
+                    self.activity.record_presence(
+                        event.event_id or f"join:{hash(frame)}", event.room, event.room,
+                        event.user_key, event.user, "join")
+                    await self.handle_join(event)
+        finally:
+            if membership_task is not None:
+                membership_task.cancel()
+                with contextlib.suppress(asyncio.CancelledError):
+                    await membership_task
+
+    async def join_configured_rooms(self):
+        for room in self.config.rooms:
+            await self.transport.join_room(room)
+        self.mark_ready()
+
+    async def maintain_room_membership(self):
+        while True:
+            await self.sleep(self.config.room_join_interval)
+            try:
+                await self.join_configured_rooms()
+            except (ConnectionError, OSError, TimeoutError, WebSocketException):
+                await self.transport.websocket.close()
+                raise
 
     async def run_forever(self):
         await self.initialize()

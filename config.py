@@ -29,6 +29,7 @@ class Config:
     ollama_lock: Path = Path("/run/lock/local-ollama.lock")
     connect_timeout: float = 15.0
     read_timeout: float = 90.0
+    room_join_interval: float = 60.0
     max_upload_bytes: int = 15 * 1024 * 1024
     collector_mode: bool = False
 
@@ -63,6 +64,9 @@ class Config:
             ollama_lock=Path(_value(environ, "TALKINCHAT_OLLAMA_LOCK", "/run/lock/local-ollama.lock")),
             connect_timeout=float(_value(environ, "TALKINCHAT_CONNECT_TIMEOUT", "15")),
             read_timeout=float(_value(environ, "TALKINCHAT_READ_TIMEOUT", "90")),
+            room_join_interval=float(
+                _value(environ, "TALKINCHAT_ROOM_JOIN_INTERVAL", "60")
+            ),
             max_upload_bytes=int(_value(environ, "TALKINCHAT_MAX_UPLOAD_BYTES", str(15 * 1024 * 1024))),
             collector_mode=_value(environ, "TALKINCHAT_MODE", "bot").casefold() == "collector",
         )
