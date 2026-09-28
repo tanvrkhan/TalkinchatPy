@@ -10,6 +10,26 @@ from registry import PermissionDenied
 from transports.talkinchat import OperationResult
 
 
+class Recorder:
+    def __init__(self):
+        self.session = None
+
+    def start(self, room, target, game, creator):
+        self.session = {"room_id": room, "target": target.casefold(), "game": game,
+                        "creator": creator, "events": 0, "started_at": 1, "path": "/tmp/x"}
+        return dict(self.session)
+
+    def status(self, room):
+        return dict(self.session) if self.session and self.session["room_id"] == room else None
+
+    def stop(self, room):
+        result = self.status(room)
+        if result is None:
+            raise ValueError("No game recording is active in this room.")
+        self.session = None
+        return result
+
+
 class Transport:
     def __init__(self):
         self.joined = []
@@ -25,11 +45,16 @@ class Transport:
         self.role = (room, user, role)
         return OperationResult(True)
 
+    async def invite(self, room, user):
+        self.invited = (room, user)
+        return OperationResult(True)
+
 
 class Bot:
     def __init__(self, root):
         self.transport = Transport()
         self.store = ConfigStore(root)
+        self.game_recorder = Recorder()
         self.replies = []
 
     async def reply(self, context, text):
@@ -37,6 +62,9 @@ class Bot:
 
     def refresh_access(self):
         pass
+
+    def members_for_room(self, room):
+        return ("Alice", "Bob")
 
 
 class RoomCommandTests(unittest.TestCase):
@@ -95,6 +123,28 @@ class RoomCommandTests(unittest.TestCase):
                 bot, room_admin, ",owner Alice")))
             self.assertFalse(hasattr(bot.transport, "role"))
             self.assertIn("creator", bot.replies[-1].casefold())
+
+    def test_invite_and_member_list_are_native(self):
+        with tempfile.TemporaryDirectory() as root:
+            bot = Bot(Path(root))
+            context = DispatchContext("owner", "My Room", "creator")
+            self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, context, ",invite Alice")))
+            self.assertEqual(("My Room", "Alice"), bot.transport.invited)
+            self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, context, ",who")))
+            self.assertIn("Alice", bot.replies[-1])
+            self.assertIn("Bob", bot.replies[-1])
+
+    def test_censorkick_toggle_and_public_game_recording_are_initialized(self):
+        with tempfile.TemporaryDirectory() as root:
+            bot = Bot(Path(root))
+            context = DispatchContext("owner", "My Room", "creator")
+            self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, context, ",censorkick on")))
+            self.assertTrue(bot.store.get("censorkick_rooms")["my room"])
+            self.assertTrue(asyncio.run(REGISTRY.dispatch(
+                bot, context, ",recordgame start OtherBot cricket")))
+            self.assertEqual("otherbot", bot.game_recorder.status("My Room")["target"])
+            self.assertTrue(asyncio.run(REGISTRY.dispatch(bot, context, ",recordgame stop")))
+            self.assertIsNone(bot.game_recorder.status("My Room"))
 
 
 if __name__ == "__main__":

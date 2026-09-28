@@ -48,8 +48,11 @@ only as historical compatibility evidence:
 TalkinChat 5.8.3 verifies room kick and role changes through the binary `Query`
 schema: action `room_admin`, type `kick` or `change_role`, target field 4, room
 field 6, and role field 11. Roles are `owner`, `admin`, `member`, and `none`.
-Buttons, profile changes, and authoritative member listing remain optional
-capabilities; callers receive text fallbacks when support is not proven.
+Invitations use action `room_stream` and type `invite`. A `you_joined` event
+contains the room's member snapshot in repeated field 40; `user_joined` and
+`user_left` maintain it while connected. Buttons and profile changes remain
+optional capabilities; callers receive text fallbacks when support is not
+proven.
 
 ## Architecture
 

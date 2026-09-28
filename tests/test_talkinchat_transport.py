@@ -6,6 +6,7 @@ from transports.talkinchat import (
     TalkinChatTransport,
     message_payload,
     moderation_payload,
+    invite_payload,
     room_payload,
     protobuf_fields,
 )
@@ -55,6 +56,16 @@ class PayloadTests(unittest.TestCase):
             moderation_payload("kick", "Room", "")
         with self.assertRaises(ValueError):
             moderation_payload("change_role", "Room", "Alice", "moderator")
+
+    def test_invite_uses_verified_room_stream_contract(self):
+        self.assertEqual(
+            {1: [b"room_stream"], 2: [b"invite"], 4: [b"Alice"], 6: [b"Room"]},
+            protobuf_fields(invite_payload("Room", "Alice")),
+        )
+        socket = Socket()
+        transport = TalkinChatTransport(socket, "bot", "pw")
+        self.assertTrue(asyncio.run(transport.invite("Room", "@Alice")).supported)
+        self.assertEqual(b"Alice", protobuf_fields(socket.sent[-1])[4][0])
 
     def test_audio_length_is_bounded(self):
         socket = Socket()

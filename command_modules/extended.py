@@ -29,13 +29,11 @@ CAPABILITY_MESSAGES = {
     "accessprobe": "TalkinChat does not expose an authoritative room access probe.",
     "profileprobe": "TalkinChat profile reads are not part of the verified protocol.",
     "audienceprobe": "TalkinChat does not expose an authoritative room audience list.",
-    "invite": "Room invitations are not supported by the verified TalkinChat protocol.",
     "connect": "Additional bot-account connections require a separately configured collector service.",
     "disconnect": "Additional bot-account connections require a separately configured collector service.",
     "setstatus": "TalkinChat status updates are not part of the verified protocol.",
     "botcmd": "Cross-process bot commands require a separately configured collector instance.",
     "logdm": "Direct-message logging is disabled by TalkinChat privacy policy.",
-    "censorkick": "Automatic kicks are unavailable because TalkinChat kick payloads are not verified; censor detection remains active.",
 }
 
 
@@ -71,8 +69,6 @@ async def _handle(bot, context, name):
         return await _reply(bot, context, "Use ,draw2 <text> for TalkinChat canvas images.")
     if name == "cfdiag":
         return await _reply(bot, context, "Image diagnostics are available only when an image provider is configured.")
-    if name == "recordgame":
-        return await _reply(bot, context, "Game recording is privacy-disabled until a dedicated collector account is configured.")
     if name == "horo":
         sign, _, day = args.partition(" ")
         return await _reply(bot, context, await asyncio.to_thread(fun.horoscope, sign, day or "today"))

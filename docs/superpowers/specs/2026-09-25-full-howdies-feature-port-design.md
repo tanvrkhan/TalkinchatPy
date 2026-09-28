@@ -87,9 +87,9 @@ Private game information uses TalkinChat DMs. A game requiring hidden hands or
 choices does not start unless the adapter confirms private delivery. Public
 state always has a complete text representation; images are enhancements.
 
-Kick and role changes are enabled through the TalkinChat 5.8.3 binary `Query`
-contract verified from the application package. Profile reads/writes, targeted
-room messages, muting, rich presence, and authoritative membership controls
+Kick, role changes, room invitations, and room-member snapshots are enabled
+through the TalkinChat 5.8.3 binary contracts verified from the application
+package. Profile reads/writes, targeted room messages, muting, and rich presence
 remain capability-gated. Unsupported commands return a precise text fallback
 and do not claim success.
 

@@ -185,6 +185,19 @@ def moderation_payload(action, room, username, role="none"):
     ))
 
 
+def invite_payload(room, username):
+    room = str(room or "").strip()
+    username = str(username or "").strip().lstrip("@")
+    if not room or not username:
+        raise ValueError("room and username are required")
+    return b"".join((
+        _string_field(1, "room_stream"),
+        _string_field(2, "invite"),
+        _string_field(4, username),
+        _string_field(6, room),
+    ))
+
+
 class Capabilities(str, Enum):
     PRIVATE_MESSAGES = "private_messages"
     MEDIA = "media"
@@ -225,6 +238,8 @@ class EventKind(str, Enum):
     DIRECT_TEXT = "direct_text"
     IMAGE = "image"
     USER_JOINED = "user_joined"
+    USER_LEFT = "user_left"
+    ROOM_JOINED = "room_joined"
     UNKNOWN = "unknown"
     MALFORMED = "malformed"
     DUPLICATE = "duplicate"
@@ -241,6 +256,8 @@ class Event:
     url: str = ""
     raw_type: str = ""
     avatar: str = ""
+    members: tuple[str, ...] = ()
+    role: str = ""
 
 
 class EventDecoder:
@@ -286,11 +303,18 @@ class EventDecoder:
             kind = EventKind.IMAGE
         elif handler == "room_event" and event_type == "user_joined":
             kind = EventKind.USER_JOINED
+        elif handler == "room_event" and event_type == "user_left":
+            kind = EventKind.USER_LEFT
+        elif handler == "room_event" and event_type in {"you_joined", "you_rejoined"}:
+            kind = EventKind.ROOM_JOINED
         elif handler in {"chat_event", "chat_message"} and event_type == "text":
             kind = EventKind.DIRECT_TEXT
         else:
             kind = EventKind.UNKNOWN
         user = str(data.get("from") or data.get("username") or "")
+        raw_members = data.get("users", ())
+        members = tuple(str(item) for item in raw_members if str(item)) if isinstance(
+            raw_members, (list, tuple)) else ()
         return Event(
             kind=kind,
             event_id=event_id,
@@ -301,6 +325,8 @@ class EventDecoder:
             url=str(data.get("url") or ""),
             raw_type=event_type,
             avatar=str(data.get("avatarUrl") or data.get("avatar_url") or ""),
+            members=members,
+            role=str(data.get("role") or ""),
         )
 
     def _decode_binary(self, frame):
@@ -328,6 +354,9 @@ class EventDecoder:
             "image": EventKind.IMAGE,
             "user_joined": EventKind.USER_JOINED,
             "joined": EventKind.USER_JOINED,
+            "user_left": EventKind.USER_LEFT,
+            "you_joined": EventKind.ROOM_JOINED,
+            "you_rejoined": EventKind.ROOM_JOINED,
         }
         user = _text(room_event, 2) or _text(room_event, 22)
         return Event(
@@ -336,6 +365,11 @@ class EventDecoder:
             user=user, user_key=normalize_identity(user), body=_text(room_event, 6),
             url=_text(room_event, 7), raw_type=event_type,
             avatar=_text(room_event, 10),
+            members=tuple(
+                value.decode("utf-8", errors="replace")
+                for value in room_event.get(40, ()) if isinstance(value, bytes)
+            ),
+            role=_text(room_event, 8),
         )
 
 
@@ -397,6 +431,9 @@ class TalkinChatTransport:
     async def set_role(self, room, username, role):
         return await self._send(moderation_payload(
             "change_role", room, username, str(role).casefold()))
+
+    async def invite(self, room, username):
+        return await self._send(invite_payload(room, username))
 
     async def room_members(self, room):
         return OperationResult(False, "Authoritative member lists are not supported by the verified protocol.")

@@ -1,5 +1,6 @@
 """Moderation, activity, and privacy-aware reporting commands."""
 
+import os
 import time
 
 from registry import command
@@ -50,6 +51,54 @@ async def mute(bot, context):
          help="Unmute a user")
 async def unmute(bot, context):
     await bot.reply(context, "Mute is not supported by the verified TalkinChat protocol.")
+
+
+@command("censorkick", category="Censor", needs_room=True, room_admin=True,
+         help="Kick users who post censored words")
+async def censorkick(bot, context):
+    value = context.args.strip().casefold()
+    rooms = dict(bot.store.get("censorkick_rooms", {}))
+    room = context.room.casefold()
+    if value in {"on", "1"}:
+        rooms[room] = True
+    elif value in {"off", "0"}:
+        rooms[room] = False
+    elif value:
+        await bot.reply(context, "Usage: ,censorkick <on|off>")
+        return
+    bot.store.set("censorkick_rooms", rooms)
+    await bot.reply(context, f"Censor kick is {'on' if rooms.get(room, False) else 'off'}.")
+
+
+@command("recordgame", level="creator", category="Config", needs_room=True,
+         help="Record public game events for protocol analysis")
+async def recordgame(bot, context):
+    values = context.args.split()
+    action = values[0].casefold() if values else "status"
+    try:
+        if action == "start" and len(values) >= 3:
+            session = bot.game_recorder.start(
+                context.room, values[1], " ".join(values[2:]), context.user)
+            await bot.reply(context, f"Recording {session['game']} public room events.")
+            return
+        if action == "stop":
+            session = bot.game_recorder.stop(context.room)
+            await bot.reply(
+                context,
+                f"Recording saved: {session['events']} public events in "
+                f"{os.path.basename(session['path'])}.")
+            return
+        if action == "status":
+            session = bot.game_recorder.status(context.room)
+            await bot.reply(
+                context,
+                f"Recording {session['game']}: {session['events']} public events."
+                if session else "No game recording is active in this room.")
+            return
+    except ValueError as exc:
+        await bot.reply(context, str(exc))
+        return
+    await bot.reply(context, "Usage: ,recordgame start <bot> <game> | status | stop")
 
 
 @command("lastactive", level="admin", room_admin=True, category="Admin", needs_room=True,

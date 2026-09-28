@@ -109,6 +109,21 @@ class CurrentProtocolTests(unittest.TestCase):
         sent_echo = bytes([8, 13]) + field(9, message)
         self.assertEqual(EventKind.UNKNOWN, EventDecoder().decode(sent_echo).kind)
 
+    def test_room_snapshot_and_departure_events_expose_members(self):
+        snapshot = (
+            field(1, "you_joined") + field(8, "admin") + field(13, "Lobby")
+            + field(40, "Alice") + field(40, "Bob")
+        )
+        joined = EventDecoder().decode(bytes([8, 6]) + field(10, snapshot))
+        self.assertEqual(EventKind.ROOM_JOINED, joined.kind)
+        self.assertEqual(("Alice", "Bob"), joined.members)
+        self.assertEqual("admin", joined.role)
+
+        departure = field(1, "user_left") + field(13, "Lobby") + field(22, "Alice")
+        left = EventDecoder().decode(bytes([8, 6]) + field(10, departure))
+        self.assertEqual(EventKind.USER_LEFT, left.kind)
+        self.assertEqual("Alice", left.user)
+
     def test_token_authentication_uses_the_verified_b_header(self):
         auth = AuthResult("ok", "91", "captcha", "", "5443", "n", "photo")
         headers = websocket_headers("Bot", "pw", auth, device_id="device", device_model="model")

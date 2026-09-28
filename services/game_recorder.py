@@ -23,7 +23,10 @@ class GameRecorder:
 
     @staticmethod
     def _append(path, record):
+        created = not Path(path).exists()
         with open(path, "a", encoding="utf-8") as stream:
+            if created:
+                os.chmod(path, 0o600)
             stream.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n")
             stream.flush()
             os.fsync(stream.fileno())
@@ -32,7 +35,8 @@ class GameRecorder:
         key = self._room_key(room_id)
         if key in self._sessions:
             raise ValueError("A game recording is already active in this room.")
-        self.directory.mkdir(parents=True, exist_ok=True)
+        self.directory.mkdir(mode=0o700, parents=True, exist_ok=True)
+        os.chmod(self.directory, 0o700)
         started_at = float(self._now())
         stamp = time.strftime("%Y%m%d-%H%M%S", time.gmtime(started_at))
         millis = int(started_at * 1000) % 1000

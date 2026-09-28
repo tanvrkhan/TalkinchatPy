@@ -25,6 +25,7 @@ from services.cricket_manager import CricketManager
 from services.cricket_stats import CricketStats
 from services.cricket_store import CricketStore
 from services.game_store import GameStore
+from services.game_recorder import GameRecorder
 from transports.talkinchat import (
     EventDecoder, EventKind, TalkinChatTransport, authenticate, websocket_headers,
 )
@@ -51,6 +52,8 @@ class TalkinChatBot:
             CoinLedger(config.state_dir / "coins.json"),
             CricketStats(config.state_dir / "cricket_stats.json"),
         )
+        self.game_recorder = GameRecorder(config.state_dir / "game_recordings")
+        self._room_members = {}
         self._initialized = False
 
     async def _connect(self, url, headers=None):
@@ -115,10 +118,18 @@ class TalkinChatBot:
                 elif (event.kind in {EventKind.TEXT, EventKind.DIRECT_TEXT}
                       and event.user_key != self.config.username.casefold()):
                     if event.kind == EventKind.TEXT:
+                        self._note_member(event.room, event.user)
                         self.activity.record_message(
                             event.event_id or f"message:{hash(frame)}",
                             event.room, event.room, event.user_key, event.user,
                             event.body)
+                        self.game_recorder.record({
+                            "handler": "room_event", "type": "text",
+                            "roomid": event.room, "username": event.user,
+                            "text": event.body, "event_id": event.event_id,
+                        })
+                        if await self.apply_censor_policy(event):
+                            continue
                     if self.config.collector_mode:
                         continue
                     context = DispatchContext(
@@ -130,10 +141,21 @@ class TalkinChatBot:
                     )
                     await self.dispatch(context, event.body)
                 elif event.kind == EventKind.USER_JOINED:
+                    self._note_member(event.room, event.user)
                     self.activity.record_presence(
                         event.event_id or f"join:{hash(frame)}", event.room, event.room,
                         event.user_key, event.user, "join")
                     await self.handle_join(event)
+                elif event.kind == EventKind.USER_LEFT:
+                    self._room_members.setdefault(event.room.casefold(), {}).pop(
+                        event.user_key, None)
+                    self.activity.record_presence(
+                        event.event_id or f"leave:{hash(frame)}", event.room, event.room,
+                        event.user_key, event.user, "leave")
+                elif event.kind == EventKind.ROOM_JOINED:
+                    self._room_members[event.room.casefold()] = {
+                        name.casefold(): name for name in event.members
+                    }
         finally:
             if membership_task is not None:
                 membership_task.cancel()
@@ -144,6 +166,28 @@ class TalkinChatBot:
         for room in self.config.rooms:
             await self.transport.join_room(room)
         self.mark_ready()
+
+    def _note_member(self, room, user):
+        if room and user:
+            self._room_members.setdefault(room.casefold(), {})[user.casefold()] = user
+
+    def members_for_room(self, room):
+        return tuple(sorted(
+            self._room_members.get(str(room).casefold(), {}).values(), key=str.casefold))
+
+    async def apply_censor_policy(self, event):
+        room = event.room.casefold()
+        if not dict(self.store.get("censorkick_rooms", {})).get(room, False):
+            return False
+        exempt = set(dict(self.store.get("censor_exempt", {})).get(room, ()))
+        if event.user_key in exempt or self.access.level_of(event.user) in {"admin", "creator"}:
+            return False
+        words = dict(self.store.get("censor_words", {})).get(room, ())
+        body = event.body.casefold()
+        if not any(str(word).casefold() in body for word in words if str(word)):
+            return False
+        result = await self.transport.kick(event.room, event.user)
+        return bool(result.supported)
 
     async def maintain_room_membership(self):
         while True:

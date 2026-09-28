@@ -17,6 +17,9 @@ DEFAULTS = {
     "welcome_images": {},
     "room_authorities": {},
     "cricket_rooms": {},
+    "censor_words": {},
+    "censor_exempt": {},
+    "censorkick_rooms": {},
 }
 
 

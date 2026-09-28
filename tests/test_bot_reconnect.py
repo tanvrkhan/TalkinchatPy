@@ -7,7 +7,7 @@ from websockets.exceptions import WebSocketException
 
 from bot import TalkinChatBot
 from config import Config
-from transports.talkinchat import protobuf_fields
+from transports.talkinchat import Event, EventKind, protobuf_fields
 
 
 class ClosingSocket:
@@ -141,6 +141,29 @@ class ReconnectTests(unittest.TestCase):
         asyncio.run(bot.initialize())
         asyncio.run(bot.initialize())
         bot.card_sessions.restore.assert_awaited_once_with()
+
+    def test_censorkick_applies_only_to_enabled_non_exempt_public_users(self):
+        bot = TalkinChatBot(self.config())
+        bot.transport = AsyncMock()
+        bot.store.set("censor_words", {"room one": ["badword"]})
+        bot.store.set("censorkick_rooms", {"room one": True})
+        bot.store.set("censor_exempt", {})
+        event = Event(
+            EventKind.TEXT, room="Room One", user="Alice", user_key="alice",
+            body="contains badword",
+        )
+        self.assertTrue(asyncio.run(bot.apply_censor_policy(event)))
+        bot.transport.kick.assert_awaited_once_with("Room One", "Alice")
+
+        bot.transport.kick.reset_mock()
+        bot.store.set("censor_exempt", {"room one": ["alice"]})
+        self.assertFalse(asyncio.run(bot.apply_censor_policy(event)))
+        bot.transport.kick.assert_not_awaited()
+
+        bot.store.set("censor_exempt", {})
+        bot.access.level_of = Mock(return_value="admin")
+        self.assertFalse(asyncio.run(bot.apply_censor_policy(event)))
+        bot.transport.kick.assert_not_awaited()
 
 
 if __name__ == "__main__":

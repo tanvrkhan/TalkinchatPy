@@ -119,8 +119,25 @@ async def set_role(bot, context):
 @command("who", aliases=("users", "members", "inroom", "u", "l"),
          help="List room members", category="Room", needs_room=True)
 async def who(bot, context):
-    result = await bot.transport.room_members(context.room)
-    await bot.reply(context, result.message)
+    members = bot.members_for_room(context.room)
+    await bot.reply(
+        context,
+        f"Members ({len(members)}): " + (", ".join(members) or "none observed yet"),
+    )
+
+
+@command("invite", aliases=("i",), help="Invite a user to this room",
+         category="Room", needs_room=True)
+async def invite(bot, context):
+    target = _target(context)
+    if not target:
+        await bot.reply(context, "Usage: ,invite <user>")
+        return
+    result = await bot.transport.invite(context.room, target)
+    await bot.reply(
+        context,
+        f"Invitation sent to {target}." if result.supported else result.message,
+    )
 
 
 @command("rooms", level="admin", help="List configured rooms", category="Admin")

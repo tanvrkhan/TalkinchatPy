@@ -1,4 +1,5 @@
 import json
+import stat
 import tempfile
 import unittest
 from pathlib import Path
@@ -35,6 +36,8 @@ class GameRecorderTests(unittest.TestCase):
         self.assertEqual(1, result["events"])
         self.assertEqual(["start", "frame", "stop"], [line["kind"] for line in lines])
         self.assertEqual(",heads", lines[1]["frame"]["contents"]["data"][0]["sm"])
+        self.assertEqual(0o600, stat.S_IMODE(Path(session["path"]).stat().st_mode))
+        self.assertEqual(0o700, stat.S_IMODE(Path(self.tempdir.name).stat().st_mode))
 
     def test_status_is_room_scoped_and_second_start_is_rejected(self):
         self.recorder.start(7, "CricketBot", "cricket", "Sherry")
